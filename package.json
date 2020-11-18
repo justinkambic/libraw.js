@@ -1,0 +1,21 @@
+{
+  "name": "libraw-wrapper",
+  "author": "Justin Kambic",
+  "version": "0.1.0",
+  "description": "Provide a subset of LibRaw functionality.",
+  "main": "./dist/libraw.js",
+  "types": "./dist/libraw.d.ts",
+  "license": "MIT",
+  "gypfile": true,
+  "dependencies": {
+    "@types/node": "^14.14.7",
+    "node-addon-api": "^3.0.0"
+  },
+  "typesVersions": {
+    ">=2.1": {
+      "*": [
+        "ts2.1/*"
+      ]
+    }
+  }
+}

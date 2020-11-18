@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": "dist",
+    "target": "ES5"
+  },
+  "include": ["src/**/*"]
+}
