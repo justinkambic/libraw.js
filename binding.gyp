@@ -1,7 +1,7 @@
 {
   "targets": [
     {
-      "target_name": "libraw_wrapper",
+      "target_name": "lrawjs",
       "cflags!": [ "-fno-exceptions",  ],
       "cflags_cc!": [ "-fno-exceptions"  ],
       "cflags_cc": ["-lraw", "-lm"],

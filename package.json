@@ -1,5 +1,5 @@
 {
-  "name": "libraw-wrapper",
+  "name": "librawjs",
   "author": "Justin Kambic",
   "version": "0.1.0",
   "description": "Provide a subset of LibRaw functionality.",
@@ -8,8 +8,13 @@
   "license": "MIT",
   "gypfile": true,
   "dependencies": {
+    "node-addon-api": "^3.0.0",
+    "node-pre-gyp": "^0.16.0",
+    "node-pre-gyp-github": "^1.4.3"
+  },
+  "devDependencies": {
     "@types/node": "^14.14.7",
-    "node-addon-api": "^3.0.0"
+    "jest": "^26.6.3"
   },
   "typesVersions": {
     ">=2.1": {
@@ -18,10 +23,13 @@
       ]
     }
   },
-  "devDependencies": {
-    "jest": "^26.6.3"
-  },
   "scripts": {
+    "install": "node-pre-gyp install --fallback-to-build",
     "test": "jest"
+  },
+  "binary": {
+    "module_name": "lrawjs",
+    "module_path": "./build/Release",
+    "host": "https://github.com/justinkambic/librawjs/releases/download"
   }
 }

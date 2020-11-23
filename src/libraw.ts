@@ -1,4 +1,7 @@
-const librawAddon = require("../build/Release/raw_wrapper.node");
+const binary = require('node-pre-gyp');
+const path = require('path');
+const bindingPath = binary.find(path.resolve(path.join(__dirname, '../package.json')));
+const librawAddon = require(bindingPath);
 
 interface LibRawWrapper {
   getMetadata: () => { [key: string]: unknown };
