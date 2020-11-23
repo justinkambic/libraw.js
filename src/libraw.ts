@@ -1,5 +1,5 @@
-const binary = require('node-pre-gyp');
-const path = require('path');
+import binary = require('node-pre-gyp');
+import path = require('path');
 const bindingPath = binary.find(path.resolve(path.join(__dirname, '../package.json')));
 const librawAddon = require(bindingPath);
 
