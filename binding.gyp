@@ -1,7 +1,7 @@
 {
   "targets": [
     {
-      "target_name": "libraw_wrapper",
+      "target_name": "node_libraw_binding",
       "cflags!": [ "-fno-exceptions",  ],
       "cflags_cc!": [ "-fno-exceptions"  ],
       "cflags_cc": ["-lraw", "-lm"],
