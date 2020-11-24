@@ -43,7 +43,7 @@ export class LibRaw {
   /**
    * Returns an object containing the RAW metadata.
    */
-  getMetadata(): Promise<{ [key: string]: unknown }> {
+  getMetadata(): Promise<{ [key: string]: any }> {
     return this.accessLibRaw(() => this.libraw.getMetadata());
   }
 
