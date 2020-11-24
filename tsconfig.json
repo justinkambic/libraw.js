@@ -2,10 +2,10 @@
   "compilerOptions": {
     "allowJs": true,
     "declaration": true,
+    "esModuleInterop": true,
     "lib": ["ES2015"],
     "module": "commonjs",
-    "outDir": "dist",
-    "target": "ES5"
+    "outDir": "dist"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "test"]
