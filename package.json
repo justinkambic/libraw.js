@@ -31,6 +31,7 @@
   "binary": {
     "module_name": "node_libraw_binding",
     "module_path": "./build/Release",
-    "host": "https://github.com/justinkambic/librawjs/releases/download"
+    "host": "https://github.com/justinkambic/librawjs/releases/download",
+    "remote_path": "{version}"
   }
 }
