@@ -1,6 +1,5 @@
 #include <napi.h>
 #include "wraptypes.h"
-#include <iostream>
 
 /* passing raw floats to v8 will cause a loss of precision.
  * simply casting to double does not seem to work either.
@@ -716,7 +715,6 @@ Napi::Object WrapGpsInfo(Napi::Env* env, libraw_gps_info_t t)
 {
   Napi::Object o = Napi::Object::New(*env);
 
-  std::cout << "Second latitude: " << t.latitude[1] << std::endl;
   o.Set("latitude", MapFloatArrayToDouble(env, t.latitude, 3));
   o.Set("longtitude", MapFloatArrayToDouble(env, t.longtitude, 3));
   o.Set("gpstimestamp", MapFloatArrayToDouble(env, t.gpstimestamp, 3));
