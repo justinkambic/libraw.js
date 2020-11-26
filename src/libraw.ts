@@ -1,5 +1,5 @@
-import binary = require('node-pre-gyp');
-import path = require('path');
+import binary from 'node-pre-gyp';
+import path from 'path';
 const bindingPath = binary.find(path.resolve(path.join(__dirname, '../package.json')));
 const librawAddon = require(bindingPath);
 
@@ -36,7 +36,7 @@ export class LibRaw {
    */
   readBuffer(buffer: Buffer) {
     return this.accessLibRaw<void>(() => {
-      this.libraw = new librawAddon.LibRawWrapper(buffer);
+      this.libraw = new librawAddon.LibRawWrapper(buffer, buffer.length);
     });
   }
 
