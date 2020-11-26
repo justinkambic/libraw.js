@@ -102,5 +102,6 @@ Napi::Value LibRawWrapper::GetMetadata(const Napi::CallbackInfo& info) {
 
 LibRawWrapper::~LibRawWrapper()
 {
+  this->processor_->recycle();
   delete this->processor_;
 }
