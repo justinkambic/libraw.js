@@ -417,7 +417,7 @@ Napi::Object WrapKodakMakernotes(Napi::Env* env, libraw_kodak_makernotes_t t)
   Napi::Array romm_camCustom = Napi::Array::New(*env, arraySize);
   Napi::Array romm_camAuto = Napi::Array::New(*env, arraySize);
 
-  for (int i = 0; i < arraySize; i++)
+  for (std::size_t i = 0; i < arraySize; i++)
   {
     romm_camDaylight[i] = MapFloatArrayToDouble(env, t.romm_camDaylight[i], arraySize);
     romm_camTungsten[i] = MapFloatArrayToDouble(env, t.romm_camTungsten[i], arraySize);
@@ -536,10 +536,10 @@ Napi::Object WrapOutputParams(Napi::Env* env, libraw_output_params_t t)
   o.Set("use_rawspeed", t.use_rawspeed);
   o.Set("use_dngsdk", t.use_dngsdk);
   o.Set("no_auto_scale", t.no_auto_scale);
-  o.Set('no_interpolation', t.no_interpolation);
-  o.Set('raw_processing_options', t.raw_processing_options);
-  o.Set('sony_arw2_posterization_thr', t.sony_arw2_posterization_thr);
-  o.Set('coolscan_nef_gamma', convertFloat(t.coolscan_nef_gamma));
+  o.Set("no_interpolation", t.no_interpolation);
+  o.Set("raw_processing_options", t.raw_processing_options);
+  o.Set("sony_arw2_posterization_thr", t.sony_arw2_posterization_thr);
+  o.Set("coolscan_nef_gamma", convertFloat(t.coolscan_nef_gamma));
   o.Set("p4shot_order", t.p4shot_order);
 
   return o;
