@@ -1,6 +1,8 @@
 import binary from 'node-pre-gyp';
 import path from 'path';
-const bindingPath = binary.find(path.resolve(path.join(__dirname, '../package.json')));
+const bindingPath = binary.find(
+  path.resolve(path.join(__dirname, '../package.json'))
+);
 const librawAddon = require(bindingPath);
 
 interface LibRawWrapper {
