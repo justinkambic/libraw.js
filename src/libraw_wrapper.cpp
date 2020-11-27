@@ -24,11 +24,7 @@ Napi::Object LibRawWrapper::Init(Napi::Env& env, Napi::Object& exports) {
 LibRawWrapper::LibRawWrapper(const Napi::CallbackInfo& info): Napi::ObjectWrap<LibRawWrapper>(info) {
   Napi::Env env = info.Env();
   Napi::HandleScope scope(env);
-  if (info.Length() < 1)
-  {
-    Napi::TypeError::New(env, "Expected path to image").ThrowAsJavaScriptException();
-    return;
-  }
+
   if (!info[0].IsString() && (!info[0].IsBuffer() && info.Length() > 1))
   {
     Napi::TypeError::New(env, "Expected path to image or buffer with size").ThrowAsJavaScriptException();
