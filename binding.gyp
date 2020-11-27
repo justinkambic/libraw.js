@@ -14,7 +14,6 @@
         "<!@(node -p \"require('node-addon-api').include\")"
       ],
       "libraries": ["/usr/local/lib/libraw_r.dylib"],
-      "defines": [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ],
       "conditions": [
         ['OS=="mac"', {
           'xcode_settings': {
