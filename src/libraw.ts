@@ -3,6 +3,8 @@ import path from 'path';
 const bindingPath = binary.find(
   path.resolve(path.join(__dirname, '../package.json'))
 );
+// weirdness related to node-pre-gyp https://github.com/mapbox/node-pre-gyp#3-dynamically-require-your-node
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const librawAddon = require(bindingPath);
 
 interface LibRawWrapper {
@@ -36,7 +38,7 @@ export class LibRaw {
    * Initializes a LibRaw instance from a file in memory.
    * @param buffer the RAW file data
    */
-  readBuffer(buffer: Buffer) {
+  readBuffer(buffer: Buffer): Promise<void> {
     return this.accessLibRaw<void>(() => {
       this.libraw = new librawAddon.LibRawWrapper(buffer, buffer.length);
     });
@@ -45,7 +47,7 @@ export class LibRaw {
   /**
    * Returns an object containing the RAW metadata.
    */
-  getMetadata(): Promise<{ [key: string]: any }> {
+  getMetadata(): Promise<{ [key: string]: unknown }> {
     return this.accessLibRaw(() => this.libraw.getMetadata());
   }
 
