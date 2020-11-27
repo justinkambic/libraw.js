@@ -2,9 +2,6 @@
   "targets": [
     {
       "target_name": "node_libraw_binding",
-      "cflags!": [ "-fno-exceptions",  ],
-      "cflags_cc!": [ "-fno-exceptions"  ],
-      "cflags_cc": ["-lraw", "-lm"],
       "sources": [
         "./src/index.cpp",
         "./src/libraw_wrapper.cpp",

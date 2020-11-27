@@ -3,6 +3,11 @@ import path from 'path';
 import fs from 'fs';
 
 describe("LibRaw", () => {
+  test('throws exception for non-existent file', () => {
+    const lr = new LibRaw();
+    expect(lr.readFile('./some/non-existent-path')).rejects.toEqual(new Error('File does not exist'));
+  });
+
   test("basic metadata fields supported", async () => {
     expect.assertions(3);
     const lr = new LibRaw();
