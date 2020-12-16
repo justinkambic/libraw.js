@@ -79,10 +79,10 @@ Napi::Value LibRawWrapper::GetMetadata(const Napi::CallbackInfo& info) {
 Napi::Value LibRawWrapper::OpenFile(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
   if (!info[0].IsString()) {
-    Napi::TypeError::New(env, "filename must be a string.").ThrowAsJavaScriptException();
+    Napi::TypeError::New(env, "openFile received an invalid argument, filename must be a string.").ThrowAsJavaScriptException();
   }
   if (info.Length() == 2 && !info[1].IsNumber()) {
-    Napi::TypeError::New(env, "bigfile_size must be a number.").ThrowAsJavaScriptException();
+    Napi::TypeError::New(env, "openFile received an invalid argument, bigfile_size must be a number.").ThrowAsJavaScriptException();
   }
   Napi::String filename = info[0].As<Napi::String>();
   int ret;
@@ -102,7 +102,7 @@ Napi::Value LibRawWrapper::OpenFile(const Napi::CallbackInfo& info) {
 Napi::Value LibRawWrapper::OpenBuffer(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
   if (info.Length() != 1 || !info[0].IsBuffer()) {
-    Napi::TypeError::New(env, "buffer is required.").ThrowAsJavaScriptException();
+    Napi::TypeError::New(env, "openBuffer received a null argument, buffer is required.").ThrowAsJavaScriptException();
   }
   Napi::Buffer<char> buffer = info[0].As<Napi::Buffer<char>>();
   return Napi::Value::From(

@@ -83,18 +83,25 @@ describe('LibRaw', () => {
       // ignore ban-ts-comment for testing purposes
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore testing C++ condition
-      await expect(lr.openFile(23)).rejects.toThrow('filename must be a string.');
+      await expect(lr.openFile(23)).rejects.toThrow('openFile received an invalid argument, filename must be a string.');
     });
 
     test('throws exception if bigfile_size is not number', async () => {
       // ignore ban-ts-comment for testing purposes
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore testing C++ condition
-      await expect(lr.openFile('a string', 'not a number')).rejects.toThrow('bigfile_size must be a number.');
+      await expect(lr.openFile('a string', 'not a number')).rejects.toThrow('openFile received an invalid argument, bigfile_size must be a number.');
     });
   });
 
   describe('openBuffer', () => {
+    test('throws exception if buffer is not provided', async () => {
+      // ignore ban-ts-comment for testing purposes
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore testing C++ condition
+      await expect(lr.openBuffer()).rejects.toThrow('openBuffer received a null argument, buffer is required.');
+    });
+
     test('openBuffer accepts data', async () => {
       const buffer = fs.readFileSync(RAW_SONY_FILE_PATH);
       expect(await lr.openBuffer(buffer)).toEqual(0);
