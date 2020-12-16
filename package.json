@@ -23,6 +23,7 @@
     "@typescript-eslint/parser": "^4.8.2",
     "babel-jest": "^26.6.3",
     "eslint": "^7.14.0",
+    "husky": "^4.3.6",
     "jest": "^26.6.3",
     "prettier": "^2.2.0"
   },
@@ -39,5 +40,11 @@
     "module_path": "./build/Release",
     "host": "https://github.com/justinkambic/librawjs/releases/download",
     "remote_path": "{version}"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run format-check",
+      "pre-push": "npm test"
+    }
   }
 }
