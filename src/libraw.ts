@@ -43,15 +43,6 @@ export class LibRaw {
   }
 
   /**
-   * Initializes a LibRaw instance from a file in
-   * the specified path.
-   * @param filePath path to the RAW file to process
-   */
-  readFile(filePath: string): Promise<void> {
-    return this.accessLibRaw<void>(() => this.libraw.open_file(filePath));
-  }
-
-  /**
    * Initializes a LibRaw instance from a file in memory.
    * @param buffer the RAW file data
    */
