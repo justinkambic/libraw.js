@@ -78,6 +78,20 @@ describe('LibRaw', () => {
     test('openFile returns error code for nonexistent file', async () => {
       expect(await lr.openFile('some nonexistent path')).not.toEqual(0);
     });
+
+    test('throws exception if filename is not string', async () => {
+      // ignore ban-ts-comment for testing purposes
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore testing C++ condition
+      await expect(lr.openFile(23)).rejects.toThrow('filename must be a string.');
+    });
+
+    test('throws exception if bigfile_size is not number', async () => {
+      // ignore ban-ts-comment for testing purposes
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore testing C++ condition
+      await expect(lr.openFile('a string', 'not a number')).rejects.toThrow('bigfile_size must be a number.');
+    });
   });
 
   describe('openBuffer', () => {
