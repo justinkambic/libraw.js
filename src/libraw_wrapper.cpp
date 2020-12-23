@@ -53,6 +53,8 @@ Napi::Value LibRawWrapper::GetThumbnail(const Napi::CallbackInfo& info) {
     env,
     "Thumbnail is not unpacked or is null."
   ).ThrowAsJavaScriptException();
+
+  return env.Undefined();
 }
 
 Napi::Value LibRawWrapper::GetXmpData(const Napi::CallbackInfo& info) {
