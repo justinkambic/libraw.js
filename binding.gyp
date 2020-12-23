@@ -10,12 +10,17 @@
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")"
       ],
-      "libraries": ["/usr/local/lib/libraw_r.dylib"],
+      "cflags!": ["-fno-exceptions"],
+      "cflags_cc!": ["-fno-exceptions"],
       "conditions": [
         ['OS=="mac"', {
+          "libraries": ["/usr/local/lib/libraw_r.dylib"],
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
           }
+        }],
+        ['OS=="linux', {
+          "libraries": ["/usr/local/lib/libraw_r.so"],
         }]
       ]
     }
