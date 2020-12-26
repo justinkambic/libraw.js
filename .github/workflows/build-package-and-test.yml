@@ -1,0 +1,39 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: build
+    steps:
+    - uses: actions/checkout@v2
+      id: checkout-code
+      name: Checkout
+      with:
+        path: master
+    - id: dependencies
+      name: Build Dependencies
+      run: apt-get update && apt-get install -y curl g++ build-essential autotools-dev automake nodejs npm git
+    - id: get-libraw
+      name: Download LibRaw Release
+      run: curl https://www.libraw.org/data/LibRaw-0.19.5.tar.gz --output LibRaw-0.19.5.tar.gz
+    - id: install-libraw
+      name: Install LibRaw
+      run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && make install
+    - id: node-deps
+      name: Node Dependencies
+      run: cd ../libraw.js && npm i -g node-gyp && npm install
+    - id: lint
+      name: Lint
+      run: npm run format-check && npm run lint
+    - id: build-package
+      name: Build Package
+      run: node-gyp configure && node-gyp build
+    - id: unit-tests
+      name: Run Unit Tests
+      run: npm run test
