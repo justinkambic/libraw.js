@@ -19,7 +19,7 @@
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
           }
         }],
-        ['OS=="linux', {
+        ['OS=="linux"', {
           "libraries": ["/usr/local/lib/libraw_r.so"],
         }]
       ]
