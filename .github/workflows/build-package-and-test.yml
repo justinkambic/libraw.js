@@ -18,7 +18,7 @@ jobs:
           path: master
       - id: dependencies
         name: Build Dependencies
-        run: sudo apt-get update && sudo apt-get install -y curl g++ build-essential autotools-dev automake nodejs npm git
+        run: sudo apt-get update && sudo apt-get install -y nodejs npm
       - id: get-libraw
         name: Download LibRaw Release
         run: curl https://www.libraw.org/data/LibRaw-0.19.5.tar.gz --output LibRaw-0.19.5.tar.gz
