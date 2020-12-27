@@ -23,6 +23,9 @@ jobs:
       - id: install-libraw
         name: Install LibRaw
         run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && sudo make install
+      - id: clean-libraw-files
+        name: Clean LibRaw Build Files
+        run: rm -rf LibRaw-0.19.5 LibRaw-0.19.5.tar.gz
       - id: global-npm
         name: Setup Global npm Packages
         run: sudo npm i -g node-gyp
