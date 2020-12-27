@@ -22,28 +22,22 @@ jobs:
         run: curl https://www.libraw.org/data/LibRaw-0.19.5.tar.gz --output LibRaw-0.19.5.tar.gz
       - id: install-libraw
         name: Install LibRaw
-        run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && sudo ./configure && sudo touch * && sudo make && sudo make install
-      # - id: clean-libraw-files
-      #   name: Clean LibRaw Build Files
-      #   run: rm -rf LibRaw-0.19.5 LibRaw-0.19.5.tar.gz
+        run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && sudo make install
+      - id: clean-libraw-files
+        name: Clean LibRaw Build Files
+        run: rm -rf LibRaw-0.19.5 LibRaw-0.19.5.tar.gz
       - id: global-npm
         name: Setup Global npm Packages
         run: sudo npm i -g node-gyp
       - id: install-npm
         name: Install npm Packages
         run: npm install
-      - id: pwd
-        name: pwd
-        run: pwd
-      - id: ls-lib
-        name: LS lib
-        run: ls /usr/local/lib
-      # - id: lint
-      #   name: Lint
-      #   run: npm run format-check && npm run lint
+      - id: lint
+        name: Lint
+        run: npm run format-check && npm run lint
       - id: build-package
         name: Build Package
         run: node-gyp configure && node-gyp build
       - id: unit-tests
         name: Run Unit Tests
-        run: sudo npm run test
+        run: npm run test
