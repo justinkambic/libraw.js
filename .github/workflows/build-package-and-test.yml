@@ -24,7 +24,7 @@ jobs:
         run: curl https://www.libraw.org/data/LibRaw-0.19.5.tar.gz --output LibRaw-0.19.5.tar.gz
       - id: install-libraw
         name: Install LibRaw
-        run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && make install
+        run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && sudo make install
       - id: node-deps
         name: Node Dependencies
         run: cd ../libraw.js && npm i -g node-gyp && npm install
