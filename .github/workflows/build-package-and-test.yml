@@ -28,6 +28,9 @@ jobs:
       - id: node-deps
         name: Node Dependencies
         run: sudo npm i -g node-gyp && npm install
+      - id: pwd
+        name: pwd
+        run: pwd
       - id: lint
         name: Lint
         run: npm run format-check && npm run lint
