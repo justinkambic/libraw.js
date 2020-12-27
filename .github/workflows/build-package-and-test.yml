@@ -34,6 +34,9 @@ jobs:
       - id: ls
         name: ls
         run: ls
+      - id: ls-above
+        name: LS above
+        run: ls ../
       - id: lint
         name: Lint
         run: npm run format-check && npm run lint
