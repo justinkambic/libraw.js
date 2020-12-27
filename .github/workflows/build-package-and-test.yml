@@ -15,7 +15,7 @@ jobs:
         id: checkout-code
         name: Checkout
         with:
-          path: master
+          path: repo-code
       - id: dependencies
         name: Build Dependencies
         run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.0-dev npm
@@ -25,9 +25,12 @@ jobs:
       - id: install-libraw
         name: Install LibRaw
         run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && sudo make install
-      - id: node-deps
-        name: Node Dependencies
-        run: sudo npm i -g node-gyp && npm install
+      - id: global-npm
+        name: Setup Global npm Packages
+        run: sudo npm i -g node-gyp
+      - id: install-npm
+        name: Install npm Packages
+        run: cd ./repo-code && npm install
       - id: pwd
         name: pwd
         run: pwd
