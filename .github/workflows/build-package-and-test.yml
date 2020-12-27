@@ -27,7 +27,7 @@ jobs:
         run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && sudo make install
       - id: node-deps
         name: Node Dependencies
-        run: npm i -g node-gyp && npm install
+        run: sudo npm i -g node-gyp && npm install
       - id: lint
         name: Lint
         run: npm run format-check && npm run lint
