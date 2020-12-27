@@ -14,8 +14,6 @@ jobs:
       - uses: actions/checkout@v2
         id: checkout-code
         name: Checkout
-        with:
-          path: master
       - id: dependencies
         name: Build Dependencies
         run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.0-dev npm
@@ -25,9 +23,18 @@ jobs:
       - id: install-libraw
         name: Install LibRaw
         run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && sudo make install
-      - id: node-deps
-        name: Node Dependencies
-        run: sudo npm i -g node-gyp && npm install
+      - id: set-ld-library
+        name: LD Library
+        run: sudo ldconfig -v && LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+      - id: clean-libraw-files
+        name: Clean LibRaw Build Files
+        run: rm -rf LibRaw-0.19.5 LibRaw-0.19.5.tar.gz
+      - id: global-npm
+        name: Setup Global npm Packages
+        run: sudo npm i -g node-gyp
+      - id: install-npm
+        name: Install npm Packages
+        run: npm install
       - id: lint
         name: Lint
         run: npm run format-check && npm run lint

@@ -16,6 +16,20 @@ const TEST_THUMBNAIL_JPG = path.join(
   'test_thumb.jpg'
 );
 
+interface HasTimestamp {
+  timestamp: number;
+}
+
+function asHasTimestamp(d: unknown): HasTimestamp {
+  if (typeof d === 'object' && d !== null) {
+    const testObj = d as HasTimestamp;
+    if (Number.isInteger(testObj.timestamp)) {
+      return testObj;
+    }
+  }
+  throw new Error('Object does not contain a `timestamp` field');
+}
+
 describe('LibRaw', () => {
   let lr: LibRaw;
 
@@ -33,7 +47,20 @@ describe('LibRaw', () => {
       const metadata = await lr.getMetadata();
       expect(metadata.idata).toMatchSnapshot();
       expect(metadata.lens).toMatchSnapshot();
-      expect(metadata.other).toMatchSnapshot();
+      const other = asHasTimestamp(metadata.other);
+      /*
+       * To avoid issues with mismatched clocks on CI server
+       * we're replacing the value for the snapshot with a hardcoded one
+       * and ensuring the date has the appropriate d/m/y.
+       *
+       * Improvements to this test are welcome.
+       */
+      const metadataDate = new Date(other.timestamp * 1000);
+      expect(metadataDate.getFullYear()).toBe(2014);
+      expect(metadataDate.getMonth()).toBe(9);
+      expect(metadataDate.getDate()).toBe(28);
+      other.timestamp = 1414528361;
+      expect(other).toMatchSnapshot();
     });
 
     test('reads img data from buffer', async () => {
@@ -43,7 +70,20 @@ describe('LibRaw', () => {
       const metadata = await lr.getMetadata();
       expect(metadata.idata).toMatchSnapshot();
       expect(metadata.lens).toMatchSnapshot();
-      expect(metadata.other).toMatchSnapshot();
+      const other = asHasTimestamp(metadata.other);
+      /*
+       * To avoid issues with mismatched clocks on CI server
+       * we're replacing the value for the snapshot with a hardcoded one
+       * and ensuring the date has the appropriate d/m/y.
+       *
+       * Improvements to this test are welcome.
+       */
+      const metadataDate = new Date(other.timestamp * 1000);
+      expect(metadataDate.getFullYear()).toBe(2014);
+      expect(metadataDate.getMonth()).toBe(9);
+      expect(metadataDate.getDate()).toBe(28);
+      other.timestamp = 1414528361;
+      expect(other).toMatchSnapshot();
     });
   });
 
