@@ -22,7 +22,7 @@ jobs:
         run: curl https://www.libraw.org/data/LibRaw-0.19.5.tar.gz --output LibRaw-0.19.5.tar.gz
       - id: install-libraw
         name: Install LibRaw
-        run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && sudo make install && sudo ldconfig
+        run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && sudo make install
       - id: clean-libraw-files
         name: Clean LibRaw Build Files
         run: rm -rf LibRaw-0.19.5 LibRaw-0.19.5.tar.gz
@@ -35,12 +35,9 @@ jobs:
       - id: pwd
         name: pwd
         run: pwd
-      - id: ls
-        name: ls
-        run: ls
-      - id: ls-above
-        name: LS above
-        run: ls ../
+      - id: ls-lib
+        name: LS lib
+        run: ls /usr/local/lib
       - id: lint
         name: Lint
         run: npm run format-check && npm run lint
