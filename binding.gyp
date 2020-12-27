@@ -20,7 +20,7 @@
           }
         }],
         ['OS=="linux"', {
-          "libraries": ["/usr/local/lib/libraw.so"],
+          "libraries": ["/usr/local/lib/libraw_r.so"],
         }]
       ]
     }
