@@ -38,7 +38,7 @@
   "binary": {
     "module_name": "node_libraw_binding",
     "module_path": "./build/Release",
-    "host": "https://github.com/justinkambic/libraw.js/releases/download",
+    "host": "https://github.com/justinkambic/libraw.js/releases/download/",
     "remote_path": "{version}"
   },
   "husky": {
@@ -46,5 +46,9 @@
       "pre-commit": "npm run lint && npm run format-check",
       "pre-push": "npm test"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justinkambic/libraw.js.git"
   }
 }
