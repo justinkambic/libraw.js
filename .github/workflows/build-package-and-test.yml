@@ -22,7 +22,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: LibRaw-0.19.5.tar.gz
-          key: libraw-0.19.5
+          key: LibRaw-0.19.5.tar.gz
       - id: refresh-cache
         name: Download LibRaw if not cached
         if: steps.cache-libraw.outputs.cache-hit != 'true'
