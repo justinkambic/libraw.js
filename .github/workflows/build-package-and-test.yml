@@ -14,9 +14,9 @@ jobs:
       - uses: actions/checkout@v2
         id: checkout-code
         name: Checkout
-      - id: dependencies
-        name: Get Dependencies
-        run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.0-dev npm
+      # - id: dependencies
+      #   name: Get Dependencies
+      #   run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.0-dev npm
       - id: cache-libraw
         name: Cache LibRaw
         uses: actions/cache@v2
@@ -26,6 +26,9 @@ jobs:
       - id: list-files
         name: Run ls
         run: ls
+      - id: list-root
+        name: Run ls root
+        run: ls /
       - id: refresh-cache
         name: Download LibRaw if not cached
         if: steps.cache-libraw.outputs.cache-hit != 'true'
