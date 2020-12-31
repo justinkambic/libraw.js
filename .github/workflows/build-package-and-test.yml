@@ -17,8 +17,15 @@ jobs:
       - id: dependencies
         name: Build Dependencies
         run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.0-dev npm
-      - id: get-libraw
-        name: Download LibRaw Release
+      - id: cache-libraw
+        name: Cache LibRaw
+        uses: actions/cache@v2
+        with:
+          path: LibRaw-0.19.5.tar.gz
+          key: libraw-0.19.5
+      - id: refresh-cache
+        name: Download LibRaw if not cached
+        if: steps.cache-libraw.outputs.cache-hit != 'true'
         run: curl https://www.libraw.org/data/LibRaw-0.19.5.tar.gz --output LibRaw-0.19.5.tar.gz
       - id: install-libraw
         name: Install LibRaw
