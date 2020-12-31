@@ -20,6 +20,7 @@ jobs:
         with:
           path: /home/runner/work/libraw.js/libraw.js/LibRaw-0.19.5.tar.gz
           key: ${{ runner.os }}-LibRaw-0.19.5.tar.gz
+          restore-keys: ${{ runner.os }}-LibRaw-0.19.5.tar.gz
       - id: list-files
         name: Run ls
         run: ls
