@@ -32,6 +32,17 @@ jobs:
       - id: global-npm
         name: Setup Global npm Packages
         run: sudo npm i -g node-gyp
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node_modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - id: install-npm
         name: Install npm Packages
         run: npm install
