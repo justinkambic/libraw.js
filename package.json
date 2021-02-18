@@ -25,11 +25,14 @@
     "eslint": "^7.14.0",
     "husky": "^4.3.6",
     "jest": "^26.6.3",
-    "prettier": "^2.2.0"
+    "prettier": "^2.2.0",
+    "typedoc": "^0.20.25",
+    "typedoc-plugin-markdown": "^3.5.0"
   },
   "scripts": {
     "format": "prettier --write .",
     "format-check": "prettier --check .",
+    "generate-docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs true --tsconfig ./tsconfig.json ./src/libraw.ts && rm ./docs/README.md",
     "lint": "eslint . --ext .ts",
     "install": "node-pre-gyp install --fallback-to-build && tsc",
     "test": "jest",
