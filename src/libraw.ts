@@ -160,11 +160,11 @@ export class LibRaw {
    * async code repetitions in public methods.
    * @param executor the interaction with LibRaw
    */
-  private accessLibRaw<T>(executor): Promise<T> {
+  private accessLibRaw<T>(executor: () => T): Promise<T> {
     return new Promise((resolve, reject) => {
       try {
         resolve(executor());
-      } catch (e) {
+      } catch (e: unknown) {
         reject(e);
       }
     });
