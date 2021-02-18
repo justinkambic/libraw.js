@@ -16,7 +16,7 @@ jobs:
         name: Checkout
       - id: dependencies
         name: Build Dependencies
-        run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.0-dev npm
+        run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.1 npm
       - id: get-libraw
         name: Download LibRaw Release
         run: curl https://www.libraw.org/data/LibRaw-0.19.5.tar.gz --output LibRaw-0.19.5.tar.gz
