@@ -15,7 +15,7 @@ const libRaw = new LibRaw();
 
 await libRaw.openFile(rawImagePath);
 const metadata = await libRaw.getMetadata();
-await libRaw.unpackThumbnail();
+await libRaw.unpackThumb();
 const thumbnailBuffer = await libRaw.getThumbnail();
 ```
 
