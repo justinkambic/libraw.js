@@ -191,9 +191,8 @@ Napi::Value LibRawWrapper::CameraCount(const Napi::CallbackInfo& info) {
 Napi::Value LibRawWrapper::CameraList(const Napi::CallbackInfo& info) {
   const char **cameraList = this->processor_->cameraList();
   size_t i = 0;
-  while (const char* c = cameraList[i]) {
+  while (cameraList[i] != nullptr) {
     i++;
-    if (cameraList[i] == nullptr) break;
   }
   Napi::Array cameraListArray = Napi::Array::New(info.Env(), i);
   for (size_t idx = 0; idx < i; idx++) {
