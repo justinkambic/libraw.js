@@ -19,16 +19,16 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.1 npm
       - id: get-libraw
         name: Download LibRaw Release
-        run: curl https://www.libraw.org/data/LibRaw-0.19.5.tar.gz --output LibRaw-0.19.5.tar.gz
+        run: curl https://www.libraw.org/data/LibRaw-0.20.1.tar.gz --output LibRaw-0.20.1.tar.gz
       - id: install-libraw
         name: Install LibRaw
-        run: tar xzvf LibRaw-0.19.5.tar.gz && cd LibRaw-0.19.5 && ./configure && touch * && make && sudo make install
+        run: tar xzvf LibRaw-0.20.1.tar.gz && cd LibRaw-0.20.1 && ./configure && touch * && make && sudo make install
       - id: set-ld-library
         name: LD Library
         run: sudo ldconfig -v && LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
       - id: clean-libraw-files
         name: Clean LibRaw Build Files
-        run: rm -rf LibRaw-0.19.5 LibRaw-0.19.5.tar.gz
+        run: rm -rf LibRaw-0.20.1 LibRaw-0.20.1.tar.gz
       - id: global-npm
         name: Setup Global npm Packages
         run: sudo npm i -g node-gyp
