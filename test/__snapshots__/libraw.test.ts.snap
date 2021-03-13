@@ -1131,9 +1131,16 @@ Object {
   "guard": "",
   "is_foveon": 0,
   "make": "Sony",
+  "maker_index": 63,
   "model": "ILCA-77M2",
+  "normalized_make": "Sony",
+  "normalized_model": "ILCA-77M2",
   "raw_count": 1,
   "software": "ILCA-77M2 v1.01",
+  "xmpdata": Object {
+    "data": Array [],
+    "type": "Buffer",
+  },
   "xmplen": 0,
   "xtrans": Array [
     Array [
@@ -1263,11 +1270,12 @@ Object {
     "AttachmentID": 0,
     "CamID": 319,
     "CameraFormat": 1,
-    "CameraMount": 1,
+    "CameraMount": 25,
     "CurAp": 5.656854,
     "CurFocal": 0,
     "FocalLengthIn35mmFormat": 0,
     "FocalType": 0,
+    "FocalUnits": 1,
     "FocusRangeIndex": 0,
     "Lens": "",
     "LensFStops": 0,
@@ -1275,7 +1283,7 @@ Object {
     "LensFeatures_suf": "",
     "LensFormat": 1,
     "LensID": "",
-    "LensMount": 1,
+    "LensMount": 25,
     "MaxAp": 0,
     "MaxAp4CurFocal": 1.8,
     "MaxAp4MaxFocal": 0,
@@ -1292,33 +1300,26 @@ Object {
     "body": "",
   },
   "nikon": Object {
-    "NikonEffectiveMaxAp": 0,
-    "NikonLensFStops": 0,
-    "NikonLensIDNumber": 0,
-    "NikonLensType": 0,
-    "NikonMCUVersion": 0,
+    "EffectiveMaxAp": 0,
+    "LensFStops": 0,
+    "LensIDNumber": 0,
+    "LensType": 0,
+    "MCUVersion": 0,
   },
 }
 `;
 
 exports[`LibRaw getMetadata basic metadata fields supported 3`] = `
 Object {
-  "AmbientTemperature": -1000,
-  "BatteryTemperature": 29.444445,
-  "CameraTemperature": -1000,
-  "FlashEC": 0,
-  "FlashGN": 0,
-  "LensTemperature": -1000,
-  "SensorTemperature": -1000,
-  "SensorTemperature2": -1000,
+  "analogbalance": Array [
+    0,
+    0,
+    0,
+    0,
+  ],
   "aperture": 5.6,
   "artist": "",
   "desc": "                               ",
-  "exifAcceleration": 0,
-  "exifAmbientTemperature": -1000,
-  "exifCameraElevationAngle": 0,
-  "exifHumidity": 0,
-  "exifPressure": 0,
   "focal_len": 35,
   "gpsdata": Array [
     0,
@@ -1371,17 +1372,39 @@ Object {
       0,
     ],
     "latref": 0,
-    "longref": 0,
-    "longtitude": Array [
+    "longitude": Array [
       0,
       0,
       0,
     ],
+    "longref": 0,
   },
-  "real_ISO": 100,
   "shot_order": 0,
   "shutter": 0.0125,
   "timestamp": 1414528361,
+}
+`;
+
+exports[`LibRaw getMetadata basic metadata fields supported 4`] = `
+Object {
+  "AmbientTemperature": -1000,
+  "BatteryTemperature": 29.444445,
+  "CameraTemperature": -1000,
+  "ColorSpace": 0,
+  "FlashEC": 0,
+  "FlashGN": 0,
+  "LensTemperature": -1000,
+  "SensorTemperature": -1000,
+  "SensorTemperature2": -1000,
+  "exifAcceleration": 0,
+  "exifAmbientTemperature": -1000,
+  "exifCameraElevationAngle": 0,
+  "exifExposureIndex": 0,
+  "exifHumidity": 0,
+  "exifPressure": 0,
+  "exifWaterDepth": 0,
+  "firmware": "",
+  "real_ISO": 100,
 }
 `;
 
