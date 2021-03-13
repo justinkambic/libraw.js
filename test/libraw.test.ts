@@ -52,6 +52,20 @@ function asHasTimestamp(d: unknown): HasTimestamp {
   throw new Error('Object does not contain a `timestamp` field');
 }
 
+interface HasCommon {
+  common: unknown;
+}
+
+function asHasCommon(d: unknown): HasCommon {
+  if (typeof d === 'object' && d !== null) {
+    const testObj = d as HasCommon;
+    if (typeof testObj.common !== undefined) {
+      return testObj;
+    }
+    return null;
+  }
+}
+
 describe('LibRaw', () => {
   let lr: LibRaw;
 
@@ -83,7 +97,7 @@ describe('LibRaw', () => {
       expect(metadataDate.getDate()).toBe(28);
       other.timestamp = 1414528361;
       expect(other).toMatchSnapshot();
-      expect(metadata.makernotes.common).toMatchSnapshot();
+      expect(asHasCommon(metadata.makernotes).common).toMatchSnapshot();
     });
 
     test('reads img data from buffer', async () => {
