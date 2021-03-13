@@ -83,6 +83,7 @@ describe('LibRaw', () => {
       expect(metadataDate.getDate()).toBe(28);
       other.timestamp = 1414528361;
       expect(other).toMatchSnapshot();
+      expect(metadata.makernotes.common).toMatchSnapshot();
     });
 
     test('reads img data from buffer', async () => {
@@ -123,12 +124,6 @@ describe('LibRaw', () => {
       await lr.openFile(RAW_SONY_FILE_PATH);
       await lr.unpack();
       expect(await lr.errorCount()).toBe(0);
-    });
-
-    test('returns non-zero code for error state', async () => {
-      await lr.openFile(RAW_NIKON_FILE_PATH);
-      await lr.unpack();
-      expect(await lr.errorCount()).not.toBe(0);
     });
   });
 
@@ -216,7 +211,7 @@ describe('LibRaw', () => {
 
   describe('cameraCount', () => {
     test('gives the number of supported cameras', async () => {
-      expect(await lr.cameraCount()).toBe(1016);
+      expect(await lr.cameraCount()).toBe(1117);
     });
   });
 
@@ -243,7 +238,7 @@ describe('LibRaw', () => {
 
   describe('version', () => {
     test('returns version string', async () => {
-      expect(await lr.version()).toEqual('0.19.5-Release');
+      expect(await lr.version()).toEqual('0.20.1-Release');
     });
   });
 
