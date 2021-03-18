@@ -66,7 +66,7 @@ are assigned likewise. For instance, increasing support from LibRaw version 0.19
 
 ### Compatibility matrix
 
-| `libraw.js` version | LibRaw version | NODE_MODULE version    |
+| `libraw.js` version | LibRaw version | `NODE_MODULE` version  |
 | :------------------ | :------------- | :--------------------- |
 | 1.0.0               | 0.19.5         | 64, 67, 72, 79, 83, 88 |
 | 2.0.0               | 0.20.0         | 64, 67, 72, 79, 83, 88 |
