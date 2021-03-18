@@ -66,10 +66,23 @@ are assigned likewise. For instance, increasing support from LibRaw version 0.19
 
 ### Compatibility matrix
 
-| `libraw.js` version | LibRaw version | NODE_MODULE version    | node release version                                |
-| :------------------ | :------------- | :--------------------- | --------------------------------------------------- |
-| 1.0.0               | 0.19.5         | 64, 67, 72, 79, 83, 88 | 10.24.0, 11.15.0, 12.21.0, 13.4.0, 14.16.0, 15.11.0 |
-| 2.0.0               | 0.20.1         | 64, 67, 72, 79, 83, 88 | 10.24.0, 11.15.0, 12.21.0, 13.4.0, 14.16.0, 15.11.0 |
+| `libraw.js` version | LibRaw version | NODE_MODULE version    |
+| :------------------ | :------------- | :--------------------- |
+| 1.0.0               | 0.19.5         | 64, 67, 72, 79, 83, 88 |
+| 2.0.0               | 0.20.0         | 64, 67, 72, 79, 83, 88 |
+
+#### Node release version matrix
+
+The matrix below details the Node.js release version used for the associated `NODE_MODULE` version listed in the compatibility matrix above.
+
+| Node release version | `NODE_MODULE` version |
+| :------------------- | :-------------------- |
+| 64                   | 10.24.0               |
+| 67                   | 11.15.0               |
+| 72                   | 12.21.0               |
+| 79                   | 13.4.0                |
+| 83                   | 14.16.0               |
+| 88                   | 15.11.0               |
 
 ### Version branching
 
