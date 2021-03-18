@@ -23,6 +23,8 @@
 import { LibRaw } from '../src/libraw';
 import path from 'path';
 import fs from 'fs';
+import * as t from 'io-ts';
+import { isRight } from 'fp-ts/Either';
 
 const RAW_SONY_FILE_PATH = path.join(
   __dirname,
@@ -38,32 +40,42 @@ const TEST_THUMBNAIL_JPG = path.join(
   'test_thumb.jpg'
 );
 
-interface HasTimestamp {
-  timestamp: number;
-}
+/**
+ * This is not intended to be a definitive representation of the full
+ * compliment of metadata fields LibRaw could return. It provides some
+ * of the expected fields so it is easier for the tests to use the
+ * interpolated types `io-ts` creates. This dependency should only be used
+ * for testing purposes.
+ */
+const metadataType = t.type({
+  idata: t.type({
+    make: t.string,
+    model: t.string,
+  }),
+  lens: t.type({
+    Lens: t.string,
+  }),
+  makernotes: t.type({
+    common: t.type({
+      CameraTemperature: t.number,
+    }),
+  }),
+  other: t.type({
+    timestamp: t.number,
+  }),
+});
 
-function asHasTimestamp(d: unknown): HasTimestamp {
-  if (typeof d === 'object' && d !== null) {
-    const testObj = d as HasTimestamp;
-    if (Number.isInteger(testObj.timestamp)) {
-      return testObj;
-    }
+function decodeLibRawMetadata(metadata: unknown) {
+  const decoded = metadataType.decode(metadata);
+  // `isRight` will return truthy if the provided metadata object corresponds to
+  // the type as defined above, otherwise, it will error log the context of each
+  // parsing failure that `io-ts` encountered. Typically this is enough to debug
+  // issues, but there are additional fields you can log when debugging tests.
+  if (!isRight(decoded)) {
+    console.error(JSON.stringify(decoded.left.map(({ context }) => context)));
+    throw new Error('Decoded metadata does not conform to expected type');
   }
-  throw new Error('Object does not contain a `timestamp` field');
-}
-
-interface HasCommon {
-  common: unknown;
-}
-
-function asHasCommon(d: unknown): HasCommon {
-  if (typeof d === 'object' && d !== null) {
-    const testObj = d as HasCommon;
-    if (typeof testObj.common !== undefined) {
-      return testObj;
-    }
-    return null;
-  }
+  return decoded.right;
 }
 
 describe('LibRaw', () => {
@@ -80,10 +92,9 @@ describe('LibRaw', () => {
   describe('getMetadata', () => {
     test('basic metadata fields supported', async () => {
       await lr.openFile(RAW_SONY_FILE_PATH);
-      const metadata = await lr.getMetadata();
+      const metadata = decodeLibRawMetadata(await lr.getMetadata());
       expect(metadata.idata).toMatchSnapshot();
       expect(metadata.lens).toMatchSnapshot();
-      const other = asHasTimestamp(metadata.other);
       /*
        * To avoid issues with mismatched clocks on CI server
        * we're replacing the value for the snapshot with a hardcoded one
@@ -91,23 +102,22 @@ describe('LibRaw', () => {
        *
        * Improvements to this test are welcome.
        */
-      const metadataDate = new Date(other.timestamp * 1000);
+      const metadataDate = new Date(metadata.other.timestamp * 1000);
       expect(metadataDate.getFullYear()).toBe(2014);
       expect(metadataDate.getMonth()).toBe(9);
       expect(metadataDate.getDate()).toBe(28);
-      other.timestamp = 1414528361;
-      expect(other).toMatchSnapshot();
-      expect(asHasCommon(metadata.makernotes).common).toMatchSnapshot();
+      metadata.other.timestamp = 1414528361;
+      expect(metadata.other).toMatchSnapshot();
+      expect(metadata.makernotes.common).toMatchSnapshot();
     });
 
     test('reads img data from buffer', async () => {
       const buffer = fs.readFileSync(RAW_SONY_FILE_PATH);
       await lr.readBuffer(buffer);
       await lr.unpack();
-      const metadata = await lr.getMetadata();
+      const metadata = decodeLibRawMetadata(await lr.getMetadata());
       expect(metadata.idata).toMatchSnapshot();
       expect(metadata.lens).toMatchSnapshot();
-      const other = asHasTimestamp(metadata.other);
       /*
        * To avoid issues with mismatched clocks on CI server
        * we're replacing the value for the snapshot with a hardcoded one
@@ -115,12 +125,12 @@ describe('LibRaw', () => {
        *
        * Improvements to this test are welcome.
        */
-      const metadataDate = new Date(other.timestamp * 1000);
+      const metadataDate = new Date(metadata.other.timestamp * 1000);
       expect(metadataDate.getFullYear()).toBe(2014);
       expect(metadataDate.getMonth()).toBe(9);
       expect(metadataDate.getDate()).toBe(28);
-      other.timestamp = 1414528361;
-      expect(other).toMatchSnapshot();
+      metadata.other.timestamp = 1414528361;
+      expect(metadata.other).toMatchSnapshot();
     });
   });
 
@@ -252,7 +262,7 @@ describe('LibRaw', () => {
 
   describe('version', () => {
     test('returns version string', async () => {
-      expect(await lr.version()).toEqual('0.20.1-Release');
+      expect(await lr.version()).toEqual('0.20.2-Release');
     });
   });
 
