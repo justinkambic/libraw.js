@@ -262,7 +262,7 @@ describe('LibRaw', () => {
 
   describe('version', () => {
     test('returns version string', async () => {
-      expect(await lr.version()).toEqual('0.20.2-Release');
+      expect(await lr.version()).toEqual('0.20.1-Release');
     });
   });
 
