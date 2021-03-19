@@ -41,7 +41,7 @@ const TEST_THUMBNAIL_JPG = path.join(
 );
 
 const __2dNumArray = t.array(t.array(t.number));
-const dngColor = t.array(
+const __dngColor = t.array(
   t.type({
     calibration: __2dNumArray,
     colormatrix: __2dNumArray,
@@ -50,7 +50,7 @@ const dngColor = t.array(
     parsedfields: t.number,
   })
 );
-const dngLevels = t.type({
+const __dngLevels = t.type({
   LinearResponseLimit: t.number,
   analogbalance: t.array(t.number),
   asshotneutral: t.array(t.number),
@@ -72,8 +72,8 @@ const __color = t.type({
   ccm: __2dNumArray,
   cmatrix: __2dNumArray,
   curve: t.array(t.number),
-  dng_color: dngColor,
-  dng_levels: dngLevels,
+  dng_color: __dngColor,
+  dng_levels: __dngLevels,
   white: __2dNumArray,
 });
 /**
@@ -141,7 +141,6 @@ function deleteLargeFields(m: Metadata) {
   // these fields are very large - `io-ts` verifies they conform to the
   // expected type/shape, and then we delete them to keep snapshots manageable
   delete m.color.P1_color;
-
   delete m.color.WB_Coeffs;
   delete m.color.WBCT_Coeffs;
   delete m.color.cblack;
