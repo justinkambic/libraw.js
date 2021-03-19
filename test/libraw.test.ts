@@ -40,6 +40,42 @@ const TEST_THUMBNAIL_JPG = path.join(
   'test_thumb.jpg'
 );
 
+const __2dNumArray = t.array(t.array(t.number));
+const dngColor = t.array(
+  t.type({
+    calibration: __2dNumArray,
+    colormatrix: __2dNumArray,
+    forwardmatrix: __2dNumArray,
+    illuminant: t.number,
+    parsedfields: t.number,
+  })
+);
+const dngLevels = t.type({
+  LinearResponseLimit: t.number,
+  analogbalance: t.array(t.number),
+  asshotneutral: t.array(t.number),
+  baseline_exposure: t.number,
+  default_crop: t.array(t.number),
+  dng_black: t.number,
+  dng_cblack: t.array(t.number),
+  dng_fblack: t.number,
+  dng_fcblack: t.array(t.number),
+  dng_whitelevel: t.array(t.number),
+  parsedfields: t.number,
+  preview_colorspace: t.number,
+});
+const __color = t.type({
+  P1_color: t.array(t.unknown),
+  WB_Coeffs: __2dNumArray,
+  WBCT_Coeffs: __2dNumArray,
+  cblack: t.array(t.number),
+  ccm: __2dNumArray,
+  cmatrix: __2dNumArray,
+  curve: t.array(t.number),
+  dng_color: dngColor,
+  dng_levels: dngLevels,
+  white: __2dNumArray,
+});
 /**
  * This is not intended to be a definitive representation of the full
  * compliment of metadata fields LibRaw could return. It provides some
@@ -48,22 +84,45 @@ const TEST_THUMBNAIL_JPG = path.join(
  * for testing purposes.
  */
 const metadataType = t.type({
+  color: __color,
   idata: t.type({
     make: t.string,
     model: t.string,
+    xmplen: t.number,
+    xmpdata: t.unknown,
+    xtrans: __2dNumArray,
+    xtrans_abs: __2dNumArray,
   }),
   lens: t.type({
     Lens: t.string,
   }),
   makernotes: t.type({
+    canon: t.type({
+      AFAreaHeights: t.array(t.number),
+      AFAreaWidths: t.array(t.number),
+      AFAreaXPositions: t.array(t.number),
+      AFAreaYPositions: t.array(t.number),
+    }),
     common: t.type({
       CameraTemperature: t.number,
     }),
   }),
   other: t.type({
+    gpsdata: t.array(t.number),
     timestamp: t.number,
   }),
+  rawdata: t.type({
+    color: __color,
+    iparams: t.type({
+      // typing for `xmpdata` could be improved
+      xmpdata: t.unknown,
+      xtrans: __2dNumArray,
+      xtrans_abs: __2dNumArray,
+    }),
+  }),
 });
+
+type Metadata = t.TypeOf<typeof metadataType>;
 
 function decodeLibRawMetadata(metadata: unknown) {
   const decoded = metadataType.decode(metadata);
@@ -76,6 +135,41 @@ function decodeLibRawMetadata(metadata: unknown) {
     throw new Error('Decoded metadata does not conform to expected type');
   }
   return decoded.right;
+}
+
+function deleteLargeFields(m: Metadata) {
+  // these fields are very large - `io-ts` verifies they conform to the
+  // expected type/shape, and then we delete them to keep snapshots manageable
+  delete m.color.P1_color;
+
+  delete m.color.WB_Coeffs;
+  delete m.color.WBCT_Coeffs;
+  delete m.color.cblack;
+  delete m.color.ccm;
+  delete m.color.cmatrix;
+  delete m.color.curve;
+  delete m.color.dng_color;
+  delete m.color.dng_levels;
+  delete m.color.white;
+  delete m.idata.xtrans;
+  delete m.idata.xtrans_abs;
+  delete m.other.gpsdata;
+  delete m.makernotes.canon.AFAreaHeights;
+  delete m.makernotes.canon.AFAreaWidths;
+  delete m.makernotes.canon.AFAreaXPositions;
+  delete m.makernotes.canon.AFAreaYPositions;
+  delete m.rawdata.color.WB_Coeffs;
+  delete m.rawdata.color.WBCT_Coeffs;
+  delete m.rawdata.color.cblack;
+  delete m.rawdata.color.ccm;
+  delete m.rawdata.color.cmatrix;
+  delete m.rawdata.color.curve;
+  delete m.rawdata.color.dng_color;
+  delete m.rawdata.color.dng_levels;
+  delete m.rawdata.color.white;
+  delete m.rawdata.iparams.xmpdata;
+  delete m.rawdata.iparams.xtrans;
+  delete m.rawdata.iparams.xtrans_abs;
 }
 
 describe('LibRaw', () => {
@@ -93,6 +187,9 @@ describe('LibRaw', () => {
     test('basic metadata fields supported', async () => {
       await lr.openFile(RAW_SONY_FILE_PATH);
       const metadata = decodeLibRawMetadata(await lr.getMetadata());
+
+      deleteLargeFields(metadata);
+
       expect(metadata.idata).toMatchSnapshot();
       expect(metadata.lens).toMatchSnapshot();
       /*
@@ -111,11 +208,26 @@ describe('LibRaw', () => {
       expect(metadata.makernotes.common).toMatchSnapshot();
     });
 
+    test('track key names to identify and prevent typo injection', async () => {
+      await lr.openFile(RAW_NIKON_FILE_PATH);
+      const metadata = decodeLibRawMetadata(await lr.getMetadata());
+
+      deleteLargeFields(metadata);
+
+      expect(metadata.idata.xmplen).toEqual(12289);
+      expect(metadata.idata.xmpdata).not.toBeFalsy();
+      delete metadata.idata.xmpdata;
+      expect(metadata).toMatchSnapshot();
+    });
+
     test('reads img data from buffer', async () => {
       const buffer = fs.readFileSync(RAW_SONY_FILE_PATH);
       await lr.readBuffer(buffer);
       await lr.unpack();
       const metadata = decodeLibRawMetadata(await lr.getMetadata());
+
+      deleteLargeFields(metadata);
+
       expect(metadata.idata).toMatchSnapshot();
       expect(metadata.lens).toMatchSnapshot();
       /*
@@ -262,7 +374,7 @@ describe('LibRaw', () => {
 
   describe('version', () => {
     test('returns version string', async () => {
-      expect(await lr.version()).toEqual('0.20.1-Release');
+      expect(await lr.version()).toEqual('0.20.2-Release');
     });
   });
 
