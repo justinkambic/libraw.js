@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '14'
       - id: nodev
-        run: echo node -v
+        run: node -v
       # - id: dependencies
       #   name: Build Dependencies
       #   run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.1 npm
