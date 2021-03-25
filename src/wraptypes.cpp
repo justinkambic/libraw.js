@@ -92,7 +92,7 @@ Napi::Object Wrapidata(Napi::Env* env, libraw_iparams_t iparams)
   o.Set("xmplen", iparams.xmplen);
   if (iparams.xmplen)
   {
-    // o.Set("xmpdata", Napi::Buffer<char>::New(*env, (char *)iparams.xmpdata, (std::size_t)iparams.xmplen));
+    o.Set("xmpdata", Napi::Buffer<char>::New(*env, iparams.xmpdata, (std::size_t)iparams.xmplen));
   }
 
   return o;
