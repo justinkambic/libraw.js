@@ -210,6 +210,18 @@ describe('LibRaw', () => {
     test('track key names to identify and prevent typo injection', async () => {
       await lr.openFile(RAW_NIKON_FILE_PATH);
       const metadata = decodeLibRawMetadata(await lr.getMetadata());
+      /*
+       * To avoid issues with mismatched clocks on CI server
+       * we're replacing the value for the snapshot with a hardcoded one
+       * and ensuring the date has the appropriate d/m/y.
+       *
+       * Improvements to this test are welcome.
+       */
+      const metadataDate = new Date(metadata.other.timestamp * 1000);
+      expect(metadataDate.getFullYear()).toBe(2019);
+      expect(metadataDate.getMonth()).toBe(6);
+      expect(metadataDate.getDate()).toBe(26);
+      metadata.other.timestamp = 1414528361;
 
       deleteLargeFields(metadata);
 
