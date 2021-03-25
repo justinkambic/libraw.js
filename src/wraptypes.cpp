@@ -92,7 +92,7 @@ Napi::Object Wrapidata(Napi::Env* env, libraw_iparams_t iparams)
   o.Set("xmplen", iparams.xmplen);
   if (iparams.xmplen)
   {
-    o.Set("xmpdata", Napi::Buffer<char>::New(*env, (char *)iparams.xmpdata, (std::size_t)iparams.xmplen));
+    // o.Set("xmpdata", Napi::Buffer<char>::New(*env, (char *)iparams.xmpdata, (std::size_t)iparams.xmplen));
   }
 
   return o;
@@ -865,7 +865,7 @@ Napi::Object WrapColordata(Napi::Env* env, libraw_colordata_t t)
   o.Set("OriginalRawFileName", t.OriginalRawFileName);
   if (t.profile_length)
   {
-    o.Set("profile", Napi::Buffer<char>::New(*env, (char *)t.profile, (std::size_t)t.profile_length));
+    // o.Set("profile", Napi::Buffer<char>::New(*env, (char *)t.profile, (std::size_t)t.profile_length));
   }
   o.Set("profile_length", t.profile_length);
   o.Set("black_stat", WrapArray(env, t.black_stat, 8));
