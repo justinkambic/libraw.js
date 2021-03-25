@@ -40,7 +40,7 @@ jobs:
         run: npm run format-check && npm run lint
       - id: build-package
         name: Build Package
-        run: node-gyp configure && node-gyp build
+        run: node-gyp rebuild
       - id: unit-tests
         name: Run Unit Tests
         run: npm run test
