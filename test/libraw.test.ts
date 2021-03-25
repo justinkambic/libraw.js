@@ -214,8 +214,6 @@ describe('LibRaw', () => {
       deleteLargeFields(metadata);
 
       expect(metadata.idata.xmplen).toEqual(12289);
-      expect(metadata.idata.xmpdata).not.toBeFalsy();
-      delete metadata.idata.xmpdata;
       expect(metadata).toMatchSnapshot();
     });
 

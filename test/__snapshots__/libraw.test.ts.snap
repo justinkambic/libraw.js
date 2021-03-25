@@ -1513,6 +1513,7 @@ Object {
     "normalized_model": "Z 6",
     "raw_count": 1,
     "software": "Ver.02.00",
+    "xmpdata": undefined,
     "xmplen": 12289,
   },
   "lens": Object {

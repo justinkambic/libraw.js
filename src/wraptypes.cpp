@@ -90,10 +90,19 @@ Napi::Object Wrapidata(Napi::Env* env, libraw_iparams_t iparams)
   o.Set("xtrans_abs", xtrans_abs);
   o.Set("cdesc", iparams.cdesc);
   o.Set("xmplen", iparams.xmplen);
-  if (iparams.xmplen)
-  {
-    o.Set("xmpdata", Napi::Buffer<char>::New(*env, iparams.xmpdata, (std::size_t)iparams.xmplen));
-  }
+  /*
+   * There were some cross-platform inconsistencies with this code.
+   * The Ubuntu container that creates the release versions works fine,
+   * as does macOS, but the ubuntu-latest container provided by GitHub Actions
+   * for the CI builds does not allow for this buffer creation at runtime.
+   * 
+   * Given that the API the package exposes has a dedicated XMP function, this
+   * buffer is excluded from the default metadata wrapper code.
+   */
+  // if (iparams.xmplen)
+  // {
+  //   // o.Set("xmpdata", Napi::Buffer<char>::New(*env, iparams.xmpdata, (std::size_t)iparams.xmplen));
+  // }
 
   return o;
 }
