@@ -1397,7 +1397,125 @@ Object {
 }
 `;
 
+exports[`LibRaw getMetadata reads img data from buffer 4`] = `
+Object {
+  "analogbalance": Array [
+    0,
+    0,
+    0,
+    0,
+  ],
+  "aperture": 5.6,
+  "artist": "",
+  "desc": "                               ",
+  "focal_len": 35,
+  "iso_speed": 100,
+  "parsed_gps": Object {
+    "altitude": 0,
+    "altref": 0,
+    "gpsparsed": 0,
+    "gpsstatus": 0,
+    "gpstimestamp": Array [
+      0,
+      0,
+      0,
+    ],
+    "latitude": Array [
+      0,
+      0,
+      0,
+    ],
+    "latref": 0,
+    "longitude": Array [
+      0,
+      0,
+      0,
+    ],
+    "longref": 0,
+  },
+  "shot_order": 0,
+  "shutter": 0.0125,
+  "timestamp": 1414528361,
+}
+`;
+
 exports[`LibRaw getMetadata track key names to identify and prevent typo injection 1`] = `
+Object {
+  "analogbalance": Array [
+    0,
+    0,
+    0,
+    0,
+  ],
+  "aperture": 2.5,
+  "artist": "Justin Kambic",
+  "desc": "",
+  "focal_len": 50,
+  "gpsdata": Array [
+    37,
+    1,
+    580313,
+    10000,
+    0,
+    1,
+    23,
+    1,
+    437059,
+    10000,
+    0,
+    1,
+    17,
+    1,
+    29,
+    1,
+    1100,
+    100,
+    80,
+    1,
+    760432471,
+    13368,
+    0,
+    959524914,
+    976695354,
+    13874,
+    0,
+    0,
+    0,
+    78,
+    69,
+    0,
+  ],
+  "iso_speed": 2500,
+  "parsed_gps": Object {
+    "altitude": 80,
+    "altref": 0,
+    "gpsparsed": 1,
+    "gpsstatus": 0,
+    "gpstimestamp": Array [
+      17,
+      29,
+      11,
+    ],
+    "latitude": Array [
+      37,
+      58.0313,
+      0,
+    ],
+    "latref": 78,
+    "longitude": Array [
+      23,
+      43.705898,
+      0,
+    ],
+    "longref": 69,
+  },
+  "shot_order": 0,
+  "shutter": 0.0125,
+  "timestamp": 1414528361,
+}
+`;
+
+exports[`LibRaw getMetadata track key names to identify and prevent typo injection 2`] = `
 Object {
   "color": Object {
     "ExifColorSpace": 255,

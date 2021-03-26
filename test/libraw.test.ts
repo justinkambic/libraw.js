@@ -114,8 +114,6 @@ const metadataType = t.type({
   rawdata: t.type({
     color: __color,
     iparams: t.type({
-      // typing for `xmpdata` could be improved
-      xmpdata: t.unknown,
       xtrans: __2dNumArray,
       xtrans_abs: __2dNumArray,
     }),
@@ -171,6 +169,27 @@ function deleteLargeFields(m: Metadata) {
   delete m.rawdata.iparams.xtrans_abs;
 }
 
+/*
+ * To avoid issues with mismatched clocks on CI server
+ * we're replacing the value for the snapshot with a hardcoded one
+ * and ensuring the date has the appropriate d/m/y.
+ */
+function normalizeTimestampAndTest(
+  metadata: Metadata,
+  expectedDateVals: { day: number; month: number; year: number }
+) {
+  const { day, month, year } = expectedDateVals;
+  const metadataDate = new Date(metadata.other.timestamp * 1000);
+
+  expect(metadataDate.getDate()).toBe(day);
+  expect(metadataDate.getMonth()).toBe(month);
+  expect(metadataDate.getFullYear()).toBe(year);
+
+  metadata.other.timestamp = 1414528361;
+
+  expect(metadata.other).toMatchSnapshot();
+}
+
 describe('LibRaw', () => {
   let lr: LibRaw;
 
@@ -191,37 +210,14 @@ describe('LibRaw', () => {
 
       expect(metadata.idata).toMatchSnapshot();
       expect(metadata.lens).toMatchSnapshot();
-      /*
-       * To avoid issues with mismatched clocks on CI server
-       * we're replacing the value for the snapshot with a hardcoded one
-       * and ensuring the date has the appropriate d/m/y.
-       *
-       * Improvements to this test are welcome.
-       */
-      const metadataDate = new Date(metadata.other.timestamp * 1000);
-      expect(metadataDate.getFullYear()).toBe(2014);
-      expect(metadataDate.getMonth()).toBe(9);
-      expect(metadataDate.getDate()).toBe(28);
-      metadata.other.timestamp = 1414528361;
-      expect(metadata.other).toMatchSnapshot();
+      normalizeTimestampAndTest(metadata, { day: 28, month: 9, year: 2014 });
       expect(metadata.makernotes.common).toMatchSnapshot();
     });
 
     test('track key names to identify and prevent typo injection', async () => {
       await lr.openFile(RAW_NIKON_FILE_PATH);
       const metadata = decodeLibRawMetadata(await lr.getMetadata());
-      /*
-       * To avoid issues with mismatched clocks on CI server
-       * we're replacing the value for the snapshot with a hardcoded one
-       * and ensuring the date has the appropriate d/m/y.
-       *
-       * Improvements to this test are welcome.
-       */
-      const metadataDate = new Date(metadata.other.timestamp * 1000);
-      expect(metadataDate.getFullYear()).toBe(2019);
-      expect(metadataDate.getMonth()).toBe(6);
-      expect(metadataDate.getDate()).toBe(26);
-      metadata.other.timestamp = 1414528361;
+      normalizeTimestampAndTest(metadata, { day: 26, month: 6, year: 2019 });
 
       deleteLargeFields(metadata);
 
@@ -239,18 +235,7 @@ describe('LibRaw', () => {
 
       expect(metadata.idata).toMatchSnapshot();
       expect(metadata.lens).toMatchSnapshot();
-      /*
-       * To avoid issues with mismatched clocks on CI server
-       * we're replacing the value for the snapshot with a hardcoded one
-       * and ensuring the date has the appropriate d/m/y.
-       *
-       * Improvements to this test are welcome.
-       */
-      const metadataDate = new Date(metadata.other.timestamp * 1000);
-      expect(metadataDate.getFullYear()).toBe(2014);
-      expect(metadataDate.getMonth()).toBe(9);
-      expect(metadataDate.getDate()).toBe(28);
-      metadata.other.timestamp = 1414528361;
+      normalizeTimestampAndTest(metadata, { day: 28, month: 9, year: 2014 });
       expect(metadata.other).toMatchSnapshot();
     });
   });

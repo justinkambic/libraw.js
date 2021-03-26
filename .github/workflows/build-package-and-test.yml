@@ -35,9 +35,6 @@ jobs:
       - id: global-npm
         name: Setup Global npm Packages
         run: sudo npm i -g node-gyp
-      - id: clean_npm
-        name: Clean npm cache
-        run: npm cache clean --force
       - id: install-npm
         name: Install npm Packages
         run: npm install
