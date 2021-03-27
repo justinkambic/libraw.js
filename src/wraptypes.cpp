@@ -90,7 +90,19 @@ Napi::Object Wrapidata(Napi::Env* env, libraw_iparams_t iparams)
   o.Set("xtrans_abs", xtrans_abs);
   o.Set("cdesc", iparams.cdesc);
   o.Set("xmplen", iparams.xmplen);
-  o.Set("xmpdata", Napi::Buffer<char>::New(*env, (char *)iparams.xmpdata, (std::size_t)iparams.xmplen));
+  /*
+   * There were some cross-platform inconsistencies with this code.
+   * The Ubuntu container that creates the release versions works fine,
+   * as does macOS, but the ubuntu-latest container provided by GitHub Actions
+   * for the CI builds does not allow for this buffer creation at runtime.
+   * 
+   * Given that the API the package exposes has a dedicated XMP function, this
+   * buffer is excluded from the default metadata wrapper code.
+   */
+  // if (iparams.xmplen)
+  // {
+  //   o.Set("xmpdata", Napi::Buffer<char>::New(*env, iparams.xmpdata, (std::size_t)iparams.xmplen));
+  // }
 
   return o;
 }
@@ -283,7 +295,6 @@ Napi::Object WrapCanonMakernotes(Napi::Env* env, libraw_canon_makernotes_t t)
   o.Set("wbi", t.wbi);
   o.Set("firmware", t.firmware);
   o.Set("RF_lensID", t.RF_lensID);
-  o.Set("HighlightTonePriority", t.HighlightTonePriority);
 
   return o;
 }
@@ -756,7 +767,7 @@ Napi::Object WrapDngLevels(Napi::Env* env, libraw_dng_levels_t t)
   o.Set("default_crop", WrapArray(env, t.default_crop, 4));
   o.Set("preview_colorspace", t.preview_colorspace);
   o.Set("analogbalance", MapFloatArrayToDouble(env, t.analogbalance, 4));
-  o.Set("asshotneutral[", WrapArray(env, t.asshotneutral, 4));
+  o.Set("asshotneutral", WrapArray(env, t.asshotneutral, 4));
   o.Set("baseline_exposure", convertFloat(t.baseline_exposure));
   o.Set("LinearResponseLimit", t.LinearResponseLimit);
 
@@ -813,7 +824,7 @@ Napi::Object WrapColordata(Napi::Env* env, libraw_colordata_t t)
   Napi::Object o = Napi::Object::New(*env);
 
   o.Set("curve", WrapArray(env, t.curve, 0x10000));
-  o.Set("cblack", WrapArray(env, t.cblack, 4102));
+  o.Set("cblack", WrapArray(env, t.cblack, LIBRAW_CBLACK_SIZE));
   o.Set("black", t.black);
   o.Set("data_maximum", t.data_maximum);
   o.Set("maximum", t.maximum);
@@ -852,9 +863,6 @@ Napi::Object WrapColordata(Napi::Env* env, libraw_colordata_t t)
     cam_xyz[i] = MapFloatArrayToDouble(env, t.cam_xyz[i], 3);
   }
   o.Set("cam_xyz", cam_xyz);
-  o.Set("flash_used", convertFloat(t.flash_used));
-  o.Set("canon_ev", convertFloat(t.canon_ev));
-  o.Set("model2", t.model2);
   o.Set("phase_one_data", WrapPh1(env, t.phase_one_data));
   o.Set("flash_used", convertFloat(t.flash_used));
   o.Set("canon_ev", convertFloat(t.canon_ev));
@@ -862,9 +870,12 @@ Napi::Object WrapColordata(Napi::Env* env, libraw_colordata_t t)
   o.Set("UniqueCameraModel", t.UniqueCameraModel);
   o.Set("LocalizedCameraModel", t.LocalizedCameraModel);
   o.Set("ImageUniqueID", t.ImageUniqueID);
-  o.Set("RawDataUniqueID[", t.RawDataUniqueID);
-  o.Set("OriginalRawFileName[", t.OriginalRawFileName);
-  o.Set("profile", Napi::Buffer<char>::New(*env, (char *)t.profile, (std::size_t)t.profile_length));
+  o.Set("RawDataUniqueID", t.RawDataUniqueID);
+  o.Set("OriginalRawFileName", t.OriginalRawFileName);
+  if (t.profile_length)
+  {
+    o.Set("profile", Napi::Buffer<char>::New(*env, (char *)t.profile, (std::size_t)t.profile_length));
+  }
   o.Set("profile_length", t.profile_length);
   o.Set("black_stat", WrapArray(env, t.black_stat, 8));
   Napi::Array dng_color = Napi::Array::New(*env, 2);
