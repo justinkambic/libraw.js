@@ -217,9 +217,10 @@ describe('LibRaw', () => {
     test('track key names to identify and prevent typo injection', async () => {
       await lr.openFile(RAW_NIKON_FILE_PATH);
       const metadata = decodeLibRawMetadata(await lr.getMetadata());
-      normalizeTimestampAndTest(metadata, { day: 26, month: 6, year: 2019 });
 
       deleteLargeFields(metadata);
+
+      normalizeTimestampAndTest(metadata, { day: 26, month: 6, year: 2019 });
 
       expect(metadata.idata.xmplen).toEqual(12289);
       expect(metadata).toMatchSnapshot();
