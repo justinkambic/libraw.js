@@ -1,0 +1,13 @@
+.github
+.vscode
+build
+docs
+test
+*.ts
+!*.d.ts
+.eslintignore
+.eslintrc.json
+.prettierignore
+.prettierrc.json
+babel.config.js
+tsconfig.json
