@@ -40,7 +40,7 @@
     "format-check": "prettier --check .",
     "generate-docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs true --tsconfig ./tsconfig.json ./src/libraw.ts && rm ./docs/README.md",
     "lint": "eslint . --ext .ts",
-    "install": "node-pre-gyp install --fallback-to-build && tsc",
+    "install": "node-pre-gyp install --fallback-to-build",
     "test": "jest",
     "test-watch": "jest --watch"
   },
