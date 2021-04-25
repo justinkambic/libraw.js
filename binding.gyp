@@ -14,7 +14,7 @@
       "cflags_cc!": ["-fno-exceptions"],
       "conditions": [
         ['OS=="mac"', {
-          "libraries": ["/usr/local/lib/libraw_r.dylib"],
+          "libraries": ["/usr/local/lib/libraw_r.a", "/usr/local/lib/libjpeg.a"],
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
           }
