@@ -32,6 +32,9 @@ jobs:
       - id: set-ld-library
         name: LD Library
         run: sudo ldconfig -v && LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+      - id: clean-libjpeg-files
+        name: Clean libjpeg files
+        run: rm -rf jpeg-9d jpegsrc.v9d.tar.gz
       - id: clean-libraw-files
         name: Clean LibRaw Build Files
         run: rm -rf LibRaw-0.20.2 LibRaw-0.20.2.tar.gz
