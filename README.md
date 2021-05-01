@@ -9,7 +9,7 @@ npm install --save libraw.js
 ## Usage
 
 ```typescript
-import { LibRaw } from 'libraw';
+import { LibRaw } from 'libraw.js';
 
 const libRaw = new LibRaw();
 
