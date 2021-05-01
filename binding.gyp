@@ -20,7 +20,7 @@
           }
         }],
         ['OS=="linux"', {
-          "libraries": ["/usr/local/lib/libraw_r.so"],
+          "libraries": ["/usr/local/lib/libraw_r.a", "/usr/local/lib/libjpeg.a"],
         }]
       ]
     }
