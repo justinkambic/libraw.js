@@ -41,6 +41,8 @@
     "generate-docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs true --tsconfig ./tsconfig.json ./src/libraw.ts && rm ./docs/README.md",
     "lint": "eslint . --ext .ts",
     "install": "node-pre-gyp install --fallback-to-build",
+    "package-release": "tsc && node-pre-gyp clean && node-pre-gyp rebuild && node-pre-gyp testbinary && node-pre-gyp package && npm run test",
+    "publish-release": "node-pre-gyp-github publish",
     "test": "jest",
     "test-watch": "jest --watch"
   },
