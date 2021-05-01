@@ -77,14 +77,15 @@ are assigned likewise. For instance, increasing support from LibRaw version 0.19
 
 The matrix below details the Node.js release version used for the associated `NODE_MODULE` version listed in the compatibility matrix above.
 
-| Node release version | `NODE_MODULE` version |
-| :------------------- | :-------------------- |
-| 64                   | 10.24.0               |
-| 67                   | 11.15.0               |
-| 72                   | 12.21.0               |
-| 79                   | 13.4.0                |
-| 83                   | 14.16.0               |
-| 88                   | 15.11.0               |
+| `NODE_MODULE` version | Node release version |
+| :-------------------- | :------------------- |
+| 64                    | 10.24.1              |
+| 67                    | 11.15.0              |
+| 72                    | 12.22.1              |
+| 79                    | 13.14.0              |
+| 83                    | 14.16.1              |
+| 88                    | 15.14.0              |
+| 93                    | 16.0.0               |
 
 ### Version branching
 
