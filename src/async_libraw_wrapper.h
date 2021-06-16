@@ -25,6 +25,6 @@
 class AsyncLibRawWrapper : public Napi::AsyncProgressWorker<uint32_t>
 {
 public:
-  static Napi::Object Init(Napi::Env env, Napi::Object exports);
+  static Napi::Function Init(Napi::Env env);
   AsyncLibRawWrapper(Napi::Function& okCallback) : Napi::AsyncProgressWorker<uint32_t>(okCallback) {}
 };

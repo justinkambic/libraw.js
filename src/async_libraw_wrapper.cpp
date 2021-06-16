@@ -58,7 +58,6 @@ Napi::Value Process(const Napi::CallbackInfo &info)
   bool shouldExtractThumbnail = ProcessOption(&options, "shouldExtractThumbnail", true);
   bool shouldExtractMetadata = ProcessOption(&options, "shouldExtractMetadata", true);
 
-
   Napi::Object result = Napi::Object::New(env);
 
   LibRaw *lr = new LibRaw();
@@ -83,9 +82,7 @@ Napi::Value Process(const Napi::CallbackInfo &info)
   return result;
 }
 
-Napi::Object AsyncLibRawWrapper::Init(Napi::Env env, Napi::Object exports)
+Napi::Function AsyncLibRawWrapper::Init(Napi::Env env)
 {
-  exports.Set(Napi::String::New(env, "processRawImage"), Napi::Function::New(env, Process));
-
-  return exports;
+  return Napi::Function::New(env, Process);
 }

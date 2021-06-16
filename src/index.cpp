@@ -25,12 +25,10 @@
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
-  Napi::Object lib = Napi::Object::New(env);
+  LibRawWrapper::Init(env, exports);
+  exports.Set("ProcessAsync", AsyncLibRawWrapper::Init(env));
 
-  lib.Set("LibRawWrapper", LibRawWrapper::Init(env, exports));
-  lib.Set("AsyncLibRawWrapper", AsyncLibRawWrapper::Init(env, exports));
-
-  return lib;
+  return exports;
 }
 
 NODE_API_MODULE(NODE_GYP_MODULE_NAME, Init)
