@@ -23,6 +23,8 @@
 #include <napi.h>
 #include "libraw/libraw.h"
 
+#pragma once
+
 class LibRawWrapper: public Napi::ObjectWrap<LibRawWrapper> {
   public:
     static Napi::Object Init(Napi::Env& env, Napi::Object& exports);

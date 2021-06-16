@@ -20,17 +20,11 @@
  * Direct further questions to justinkambic.github@gmail.com.
  */
 
-#include "libraw_wrapper.h"
-#include "async_libraw_wrapper.h"
+#include <napi.h>
 
-Napi::Object Init(Napi::Env env, Napi::Object exports)
+class AsyncLibRawWrapper : public Napi::AsyncProgressWorker<uint32_t>
 {
-  Napi::Object lib = Napi::Object::New(env);
-
-  lib.Set("LibRawWrapper", LibRawWrapper::Init(env, exports));
-  lib.Set("AsyncLibRawWrapper", AsyncLibRawWrapper::Init(env, exports));
-
-  return lib;
-}
-
-NODE_API_MODULE(NODE_GYP_MODULE_NAME, Init)
+public:
+  static Napi::Object Init(Napi::Env env, Napi::Object exports);
+  AsyncLibRawWrapper(Napi::Function& okCallback) : Napi::AsyncProgressWorker<uint32_t>(okCallback) {}
+};
