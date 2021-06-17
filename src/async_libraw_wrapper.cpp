@@ -60,24 +60,23 @@ Napi::Value Process(const Napi::CallbackInfo &info)
 
   Napi::Object result = Napi::Object::New(env);
 
-  LibRaw *lr = new LibRaw();
-  lr->open_buffer(buf.Data(), buf.Length());
+  LibRaw lr; 
+  lr.open_buffer(buf.Data(), buf.Length());
 
   if (shouldExtractThumbnail)
   {
-    lr->unpack_thumb();
-    libraw_data_t data = lr->imgdata;
+    lr.unpack_thumb();
+    libraw_data_t data = lr.imgdata;
     result.Set("thumbnail_buffer", Napi::Buffer<char>::New(env, data.thumbnail.thumb, data.thumbnail.tlength));
   }
 
   if (shouldExtractMetadata)
   {
-    libraw_data_t data = lr->imgdata;
+    libraw_data_t data = lr.imgdata;
     result.Set("metadata", WrapLibRawData(&env, &data));
   }
 
-  lr->recycle();
-  delete lr;
+  lr.recycle();
 
   return result;
 }

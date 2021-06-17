@@ -203,7 +203,7 @@ interface ProcessRawFileReturnValue {
   metadata?: { [key: string]: unknown };
 }
 
-export function ProcessRawFile(
+export function processRawFile(
   buffer: Buffer,
   options?: Partial<ProcessRawFileOptions>
 ): ProcessRawFileReturnValue {
