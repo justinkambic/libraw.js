@@ -46,12 +46,10 @@ Napi::Value Process(const Napi::CallbackInfo &info)
   if (buf.IsUndefined())
   {
     Napi::Error::New(env, "Buffer for LibRaw processor cannot be undefined").ThrowAsJavaScriptException();
-    return env.Undefined();
   }
   if (buf.IsNull())
   {
     Napi::Error::New(env, "Buffer for LibRaw processor cannot be null").ThrowAsJavaScriptException();
-    return env.Undefined();
   }
 
   Napi::Object options = info[1].As<Napi::Object>();

@@ -274,6 +274,48 @@ const expectedLensData = `
         }
       `;
 
+const expectedOtherMetadata = `
+        Object {
+          "analogbalance": Array [
+            0,
+            0,
+            0,
+            0,
+          ],
+          "aperture": 5.6,
+          "artist": "",
+          "desc": "                               ",
+          "focal_len": 35,
+          "iso_speed": 100,
+          "parsed_gps": Object {
+            "altitude": 0,
+            "altref": 0,
+            "gpsparsed": 0,
+            "gpsstatus": 0,
+            "gpstimestamp": Array [
+              0,
+              0,
+              0,
+            ],
+            "latitude": Array [
+              0,
+              0,
+              0,
+            ],
+            "latref": 0,
+            "longitude": Array [
+              0,
+              0,
+              0,
+            ],
+            "longref": 0,
+          },
+          "shot_order": 0,
+          "shutter": 0.0125,
+          "timestamp": 1414528361,
+        }
+      `;
+
 const expectedCommonMakernotes = `
       Object {
         "AmbientTemperature": -1000,
@@ -348,9 +390,9 @@ describe('LibRaw', () => {
       deleteLargeFields(metadata);
 
       expect(metadata.idata).toMatchInlineSnapshot(expectedIData);
-      expect(metadata.lens).toMatchSnapshot();
+      expect(metadata.lens).toMatchInlineSnapshot(expectedLensData);
       normalizeTimestampAndTest(metadata, { day: 28, month: 9, year: 2014 });
-      expect(metadata.other).toMatchSnapshot();
+      expect(metadata.other).toMatchInlineSnapshot(expectedOtherMetadata);
     });
   });
 
