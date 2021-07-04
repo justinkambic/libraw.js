@@ -36,7 +36,7 @@ interface LibRawWrapper {
   getXmp: () => Buffer;
   cameraCount: () => number;
   cameraList: () => string[];
-  open_file: (filename: string, bifile_size?: number) => number;
+  open_file: (filename: string, bigfile_size?: number) => number;
   open_buffer: (buffer: Buffer) => number;
   recycle: () => void;
   recycle_datastream: () => void;
