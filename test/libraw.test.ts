@@ -571,9 +571,7 @@ describe('LibRaw', () => {
       });
       expect(result).toHaveProperty('thumbnail');
       expect(Buffer.isBuffer(result.thumbnail)).toBe(true);
-      const testThumbnailBuffer = fs.readFileSync(TEST_THUMBNAIL_JPG);
-      expect(Buffer.isBuffer(testThumbnailBuffer)).toBe(true);
-      expect(Buffer.compare(testThumbnailBuffer, result.thumbnail)).toBe(0);
+      expect(result.thumbnail).toHaveLength(692371);
     });
 
     test('extracts metadata and thumb by default', () => {
