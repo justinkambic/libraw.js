@@ -1,7 +1,7 @@
 {
   "name": "libraw.js",
   "author": "Justin Kambic",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Provide a subset of LibRaw functionality.",
   "main": "./dist/libraw.js",
   "types": "./dist/libraw.d.ts",
