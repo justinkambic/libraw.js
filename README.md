@@ -72,10 +72,13 @@ are assigned likewise. For instance, increasing support from LibRaw version 0.19
 | 2.0.0               | 0.20.0         | 64, 67, 72, 79, 83, 88, 93 |
 | 2.1.0               | 0.20.1         | 64, 67, 72, 79, 83, 88, 93 |
 | 2.2.0               | 0.20.2         | 64, 67, 72, 79, 83, 88, 93 |
+| 2.2.1               | 0.20.2         | 64, 67, 72, 79, 83, 88, 93 |
 
 #### Node release version matrix
 
 The matrix below details the Node.js release version used for the associated `NODE_MODULE` version listed in the compatibility matrix above.
+
+##### libraw.js versions 1.0 - 2.2.0
 
 | `NODE_MODULE` version | Node release version |
 | :-------------------- | :------------------- |
@@ -86,6 +89,12 @@ The matrix below details the Node.js release version used for the associated `NO
 | 83                    | 14.16.1              |
 | 88                    | 15.14.0              |
 | 93                    | 16.0.0               |
+
+##### libraw.js versions 2.2.1+
+
+Following `v2.2.1` all versions will use the latest version of node per `NODE_MODULE` version.
+For example, at the time when `2.2.1` was packaged, Node `16.5.0` was the latest release for
+module version `93`. Later, we may use a future hypothetical `16.5.3` for the next release.
 
 ### Version branching
 
