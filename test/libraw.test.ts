@@ -20,7 +20,7 @@
  * Direct further questions to justinkambic.github@gmail.com.
  */
 
-import { LibRaw } from '../src/libraw';
+import { LibRaw, processRawFile } from '../src/libraw';
 import path from 'path';
 import fs from 'fs';
 import * as t from 'io-ts';
@@ -190,6 +190,155 @@ function normalizeTimestampAndTest(
   expect(metadata.other).toMatchSnapshot();
 }
 
+const expectedIData = `
+        Object {
+          "cdesc": "RGBG",
+          "colors": 3,
+          "dng_version": 0,
+          "filters": 3031741620,
+          "guard": "",
+          "is_foveon": 0,
+          "make": "Sony",
+          "maker_index": 63,
+          "model": "ILCA-77M2",
+          "normalized_make": "Sony",
+          "normalized_model": "ILCA-77M2",
+          "raw_count": 1,
+          "software": "ILCA-77M2 v1.01",
+          "xmpdata": undefined,
+          "xmplen": 0,
+        }
+      `;
+
+const expectedLensData = `
+        Object {
+          "EXIF_MaxAp": 1.799575,
+          "FocalLengthIn35mmFormat": 52,
+          "InternalLensSerial": "",
+          "Lens": "DT 35mm F1.8 SAM",
+          "LensMake": "",
+          "LensSerial": "",
+          "MaxAp4MaxFocal": 1.8,
+          "MaxAp4MinFocal": 1.8,
+          "MaxFocal": 35,
+          "MinFocal": 35,
+          "dng": Object {
+            "MaxAp4MaxFocal": 0,
+            "MaxAp4MinFocal": 0,
+            "MaxFocal": 0,
+            "MinFocal": 0,
+          },
+          "makernotes": Object {
+            "Adapter": "",
+            "AdapterID": 0,
+            "Attachment": "",
+            "AttachmentID": 0,
+            "CamID": 319,
+            "CameraFormat": 1,
+            "CameraMount": 25,
+            "CurAp": 5.656854,
+            "CurFocal": 0,
+            "FocalLengthIn35mmFormat": 0,
+            "FocalType": 0,
+            "FocalUnits": 1,
+            "FocusRangeIndex": 0,
+            "Lens": "",
+            "LensFStops": 0,
+            "LensFeatures_pre": "",
+            "LensFeatures_suf": "",
+            "LensFormat": 1,
+            "LensID": "",
+            "LensMount": 25,
+            "MaxAp": 0,
+            "MaxAp4CurFocal": 1.8,
+            "MaxAp4MaxFocal": 0,
+            "MaxAp4MinFocal": 1.8,
+            "MaxFocal": 0,
+            "MinAp": 0,
+            "MinAp4CurFocal": 22.200001,
+            "MinAp4MaxFocal": 0,
+            "MinAp4MinFocal": 0,
+            "MinFocal": 35,
+            "MinFocusDistance": 0,
+            "Teleconverter": "",
+            "TeleconverterID": 0,
+            "body": "",
+          },
+          "nikon": Object {
+            "EffectiveMaxAp": 0,
+            "LensFStops": 0,
+            "LensIDNumber": 0,
+            "LensType": 0,
+            "MCUVersion": 0,
+          },
+        }
+      `;
+
+const expectedOtherMetadata = `
+        Object {
+          "analogbalance": Array [
+            0,
+            0,
+            0,
+            0,
+          ],
+          "aperture": 5.6,
+          "artist": "",
+          "desc": "                               ",
+          "focal_len": 35,
+          "iso_speed": 100,
+          "parsed_gps": Object {
+            "altitude": 0,
+            "altref": 0,
+            "gpsparsed": 0,
+            "gpsstatus": 0,
+            "gpstimestamp": Array [
+              0,
+              0,
+              0,
+            ],
+            "latitude": Array [
+              0,
+              0,
+              0,
+            ],
+            "latref": 0,
+            "longitude": Array [
+              0,
+              0,
+              0,
+            ],
+            "longref": 0,
+          },
+          "shot_order": 0,
+          "shutter": 0.0125,
+          "timestamp": 1414528361,
+        }
+      `;
+
+const expectedCommonMakernotes = `
+      Object {
+        "AmbientTemperature": -1000,
+        "BatteryTemperature": 29.444445,
+        "CameraTemperature": -1000,
+        "ColorSpace": 0,
+        "FlashEC": 0,
+        "FlashGN": 0,
+        "LensTemperature": -1000,
+        "SensorTemperature": -1000,
+        "SensorTemperature2": -1000,
+        "exifAcceleration": 0,
+        "exifAmbientTemperature": -1000,
+        "exifCameraElevationAngle": 0,
+        "exifExposureIndex": 0,
+        "exifHumidity": 0,
+        "exifPressure": 0,
+        "exifWaterDepth": 0,
+        "firmware": "",
+        "real_ISO": 100,
+      }
+    `;
+
 describe('LibRaw', () => {
   let lr: LibRaw;
 
@@ -201,6 +350,15 @@ describe('LibRaw', () => {
     await lr.recycle();
   });
 
+  function assertMetadata(metadata: Metadata) {
+    expect(metadata.idata).toMatchInlineSnapshot(expectedIData);
+    expect(metadata.lens).toMatchInlineSnapshot(expectedLensData);
+    normalizeTimestampAndTest(metadata, { day: 28, month: 9, year: 2014 });
+    expect(metadata.makernotes.common).toMatchInlineSnapshot(
+      expectedCommonMakernotes
+    );
+  }
+
   describe('getMetadata', () => {
     test('basic metadata fields supported', async () => {
       await lr.openFile(RAW_SONY_FILE_PATH);
@@ -208,10 +366,7 @@ describe('LibRaw', () => {
 
       deleteLargeFields(metadata);
 
-      expect(metadata.idata).toMatchSnapshot();
-      expect(metadata.lens).toMatchSnapshot();
-      normalizeTimestampAndTest(metadata, { day: 28, month: 9, year: 2014 });
-      expect(metadata.makernotes.common).toMatchSnapshot();
+      assertMetadata(metadata);
     });
 
     test('track key names to identify and prevent typo injection', async () => {
@@ -234,10 +389,10 @@ describe('LibRaw', () => {
 
       deleteLargeFields(metadata);
 
-      expect(metadata.idata).toMatchSnapshot();
-      expect(metadata.lens).toMatchSnapshot();
+      expect(metadata.idata).toMatchInlineSnapshot(expectedIData);
+      expect(metadata.lens).toMatchInlineSnapshot(expectedLensData);
       normalizeTimestampAndTest(metadata, { day: 28, month: 9, year: 2014 });
-      expect(metadata.other).toMatchSnapshot();
+      expect(metadata.other).toMatchInlineSnapshot(expectedOtherMetadata);
     });
   });
 
@@ -376,6 +531,67 @@ describe('LibRaw', () => {
   describe('versionNumber', () => {
     test('returns a version number >= version at time of add-on creation', async () => {
       expect(await lr.versionNumber()).toBeGreaterThanOrEqual(4869);
+    });
+  });
+
+  describe('processRawFile', () => {
+    let options: {
+      shouldExtractThumbnail: boolean;
+      shouldExtractMetadata: boolean;
+    };
+
+    beforeEach(() => {
+      options = { shouldExtractMetadata: false, shouldExtractThumbnail: false };
+    });
+
+    test('does not extract data when all options are false', () => {
+      const result = processRawFile(
+        fs.readFileSync(RAW_SONY_FILE_PATH),
+        options
+      );
+      expect(result).not.toHaveProperty('metadata');
+      expect(result).not.toHaveProperty('thumbnail');
+    });
+
+    test('extracts metadata', () => {
+      const result = processRawFile(fs.readFileSync(RAW_SONY_FILE_PATH), {
+        ...options,
+        shouldExtractMetadata: true,
+      });
+      expect(result).toHaveProperty('metadata');
+      const decoded = decodeLibRawMetadata(result.metadata);
+      deleteLargeFields(decoded);
+      expect(decoded.idata).toMatchInlineSnapshot(expectedIData);
+    });
+
+    test('extracts thumbnail', () => {
+      const result = processRawFile(fs.readFileSync(RAW_SONY_FILE_PATH), {
+        ...options,
+        shouldExtractThumbnail: true,
+      });
+      expect(result).toHaveProperty('thumbnail');
+      expect(Buffer.isBuffer(result.thumbnail)).toBe(true);
+      expect(result.thumbnail).toHaveLength(692371);
+    });
+
+    test('extracts metadata and thumb by default', () => {
+      const result = processRawFile(fs.readFileSync(RAW_SONY_FILE_PATH));
+      expect(result).toHaveProperty('metadata');
+      expect(result).toHaveProperty('thumbnail');
+      expect(result.metadata).toBeTruthy();
+      expect(result.thumbnail).toBeTruthy();
+    });
+
+    test('throws exception when buffer is undefined', () => {
+      expect(() =>
+        processRawFile(undefined)
+      ).toThrowErrorMatchingInlineSnapshot('"Invalid argument"');
+    });
+
+    test('throws exception when buffer is null', () => {
+      expect(() => processRawFile(null)).toThrowErrorMatchingInlineSnapshot(
+        '"Invalid argument"'
+      );
     });
   });
 });

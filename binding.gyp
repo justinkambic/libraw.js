@@ -5,7 +5,8 @@
       "sources": [
         "./src/index.cpp",
         "./src/libraw_wrapper.cpp",
-        "./src/wraptypes.cpp"
+        "./src/wraptypes.cpp",
+        "./src/async_libraw_wrapper.cpp"
       ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")"
