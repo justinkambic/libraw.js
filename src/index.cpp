@@ -21,14 +21,10 @@
  */
 
 #include "libraw_wrapper.h"
-#include "async_libraw_wrapper.h"
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
-  LibRawWrapper::Init(env, exports);
-  exports.Set("ProcessAsync", AsyncLibRawWrapper::Init(env));
-
-  return exports;
+  return LibRawWrapper::Init(env, exports);
 }
 
 NODE_API_MODULE(NODE_GYP_MODULE_NAME, Init)

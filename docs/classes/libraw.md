@@ -40,7 +40,7 @@ Wraps LibRaw's functionality.
 
 **Returns:** [*LibRaw*](libraw.md)
 
-Defined in: [libraw.ts:54](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L54)
+Defined in: [libraw.ts:54](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L54)
 
 ## Properties
 
@@ -48,7 +48,7 @@ Defined in: [libraw.ts:54](https://github.com/justinkambic/libraw.js/blob/c5160d
 
 • `Private` **libraw**: LibRawWrapper
 
-Defined in: [libraw.ts:54](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L54)
+Defined in: [libraw.ts:54](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L54)
 
 ## Methods
 
@@ -73,7 +73,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<T\>
 
-Defined in: [libraw.ts:185](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L185)
+Defined in: [libraw.ts:185](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L185)
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 **Returns:** *Promise*<number\>
 
-Defined in: [libraw.ts:127](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L127)
+Defined in: [libraw.ts:127](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L127)
 
 ___
 
@@ -93,7 +93,7 @@ ___
 
 **Returns:** *Promise*<string[]\>
 
-Defined in: [libraw.ts:131](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L131)
+Defined in: [libraw.ts:131](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L131)
 
 ___
 
@@ -105,7 +105,7 @@ This call returns count of non-fatal data errors (out of range, etc) occured in 
 
 **Returns:** *Promise*<number\>
 
-Defined in: [libraw.ts:63](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L63)
+Defined in: [libraw.ts:63](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L63)
 
 ___
 
@@ -117,7 +117,7 @@ Returns an object containing the RAW metadata.
 
 **Returns:** *Promise*<{ [key: string]: *unknown*;  }\>
 
-Defined in: [libraw.ts:78](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L78)
+Defined in: [libraw.ts:78](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L78)
 
 ___
 
@@ -129,7 +129,7 @@ Unpacks and returns the bytes for the image's thumbnail.
 
 **Returns:** *Promise*<Buffer\>
 
-Defined in: [libraw.ts:92](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L92)
+Defined in: [libraw.ts:92](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L92)
 
 ___
 
@@ -141,7 +141,7 @@ Helper function that returns the XMP data of the RAW file.
 
 **Returns:** *Promise*<Buffer\>
 
-Defined in: [libraw.ts:85](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L85)
+Defined in: [libraw.ts:85](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L85)
 
 ___
 
@@ -165,7 +165,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<number\>
 
-Defined in: [libraw.ts:106](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L106)
+Defined in: [libraw.ts:106](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L106)
 
 ___
 
@@ -186,7 +186,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<number\>
 
-Defined in: [libraw.ts:118](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L118)
+Defined in: [libraw.ts:118](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L118)
 
 ___
 
@@ -204,7 +204,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [libraw.ts:71](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L71)
+Defined in: [libraw.ts:71](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L71)
 
 ___
 
@@ -217,7 +217,7 @@ Repeated calls of recycle() are quite possible and do not conflict with anything
 
 **Returns:** *Promise*<void\>
 
-Defined in: [libraw.ts:139](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L139)
+Defined in: [libraw.ts:139](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L139)
 
 ___
 
@@ -229,7 +229,7 @@ This call closes input datastream with associated data buffer and unblocks opene
 
 **Returns:** *Promise*<void\>
 
-Defined in: [libraw.ts:146](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L146)
+Defined in: [libraw.ts:146](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L146)
 
 ___
 
@@ -247,7 +247,7 @@ Name | Type |
 
 **Returns:** *Promise*<string\>
 
-Defined in: [libraw.ts:153](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L153)
+Defined in: [libraw.ts:153](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L153)
 
 ___
 
@@ -259,7 +259,7 @@ Unpacks the RAW files of the image, calculates the black level (not for all form
 
 **Returns:** *Promise*<number\>
 
-Defined in: [libraw.ts:160](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L160)
+Defined in: [libraw.ts:160](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L160)
 
 ___
 
@@ -272,7 +272,7 @@ result into the imgdata.thumbnail.thumb buffer.
 
 **Returns:** *Promise*<number\>
 
-Defined in: [libraw.ts:168](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L168)
+Defined in: [libraw.ts:168](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L168)
 
 ___
 
@@ -282,7 +282,7 @@ ___
 
 **Returns:** *Promise*<string\>
 
-Defined in: [libraw.ts:172](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L172)
+Defined in: [libraw.ts:172](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L172)
 
 ___
 
@@ -292,4 +292,4 @@ ___
 
 **Returns:** *Promise*<number\>
 
-Defined in: [libraw.ts:176](https://github.com/justinkambic/libraw.js/blob/c5160d6/src/libraw.ts#L176)
+Defined in: [libraw.ts:176](https://github.com/justinkambic/libraw.js/blob/f24cbd4/src/libraw.ts#L176)

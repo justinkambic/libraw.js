@@ -192,29 +192,3 @@ export class LibRaw {
     });
   }
 }
-
-interface ProcessRawFileOptions {
-  shouldExtractMetadata: boolean;
-  shouldExtractThumbnail: boolean;
-}
-
-interface ProcessRawFileReturnValue {
-  thumbnail?: Buffer;
-  metadata?: { [key: string]: unknown };
-}
-
-export function processRawFile(
-  buffer: Buffer,
-  options?: Partial<ProcessRawFileOptions>
-): ProcessRawFileReturnValue {
-  const result = librawAddon.ProcessAsync(buffer, options);
-
-  const ret: ProcessRawFileReturnValue = {};
-  if (result.thumbnail_buffer) {
-    ret.thumbnail = result.thumbnail_buffer;
-  }
-  if (result.metadata) {
-    ret.metadata = result.metadata;
-  }
-  return ret;
-}
