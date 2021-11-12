@@ -9,6 +9,7 @@
   "gypfile": true,
   "dependencies": {
     "node-addon-api": "^3.0.0",
+    "node-gyp-build": "^4.3.0",
     "node-pre-gyp": "^0.16.0",
     "node-pre-gyp-github": "^1.4.3"
   },
@@ -40,7 +41,7 @@
     "format-check": "prettier --check .",
     "generate-docs": "typedoc --plugin typedoc-plugin-markdown --hideBreadcrumbs true --tsconfig ./tsconfig.json ./src/libraw.ts && rm ./docs/README.md",
     "lint": "eslint . --ext .ts",
-    "install": "node-pre-gyp install --fallback-to-build",
+    "install": "node-gyp-build",
     "package-release": "tsc && node-pre-gyp clean && node-pre-gyp rebuild && node-pre-gyp testbinary && node-pre-gyp package && npm run test",
     "publish-release": "node-pre-gyp-github publish",
     "test": "jest",
