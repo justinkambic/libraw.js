@@ -20,14 +20,13 @@
  * Direct further questions to justinkambic.github@gmail.com.
  */
 
-import binary from 'node-pre-gyp';
-import path from 'path';
-const bindingPath = binary.find(
-  path.resolve(path.join(__dirname, '../package.json'))
-);
-// weirdness related to node-pre-gyp https://github.com/mapbox/node-pre-gyp#3-dynamically-require-your-node
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const librawAddon = require(bindingPath);
+import * as path from 'path';
+import nodeGypBuild from 'node-gyp-build';
+
+// `prebuildify` import magic, handles loading pre-built bins or will
+// try to `node-gyp build` if none are found. If you cannot get this to work
+// for your platform, you can do a dynamic install of LibRaw and the package should work.
+const librawAddon = nodeGypBuild(path.join(__dirname, '..'));
 
 interface LibRawWrapper {
   error_count: () => number;
