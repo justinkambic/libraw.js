@@ -1,4 +1,4 @@
-# libraw
+# libraw.js
 
 ## Table of contents
 
