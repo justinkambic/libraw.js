@@ -4,4 +4,4 @@
 
 ### Classes
 
-- [LibRaw](classes/libraw.md)
+- [LibRaw](classes/LibRaw.md)
