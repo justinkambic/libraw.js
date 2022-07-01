@@ -41,6 +41,7 @@ class LibRawWrapper: public Napi::ObjectWrap<LibRawWrapper> {
     Napi::Value Version(const Napi::CallbackInfo& info);
     Napi::Value VersionNumber(const Napi::CallbackInfo& info);
     Napi::Value StrError(const Napi::CallbackInfo& info);
+    Napi::Value ExtractTiff(const Napi::CallbackInfo &info);
     void RecycleDatastream(const Napi::CallbackInfo& info);
     void Recycle(const Napi::CallbackInfo& info);
   private:
