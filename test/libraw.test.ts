@@ -22,7 +22,7 @@
 
 import { LibRaw } from '../src/libraw';
 import path from 'path';
-import fs from 'fs';
+import fs, { promises as fsPromises } from 'fs';
 import * as t from 'io-ts';
 import { isRight } from 'fp-ts/Either';
 
@@ -39,6 +39,8 @@ const TEST_THUMBNAIL_JPG = path.join(
   'test_images',
   'test_thumb.jpg'
 );
+const SAMPLE_TIFF = path.join(__dirname, 'test_images', 'sample.tiff');
+const TEST_TIFF_OUTPUT_PATH = path.join(__dirname, 'test_images', 'test.tiff');
 
 const __2dNumArray = t.array(t.array(t.number));
 const __dngColor = t.array(
@@ -337,6 +339,26 @@ describe('LibRaw', () => {
       const thumbnail = await lr.getThumbnail();
       const testBuffer = fs.readFileSync(TEST_THUMBNAIL_JPG);
       expect(thumbnail.equals(testBuffer)).toBe(true);
+    });
+  });
+
+  describe('extractTiff', () => {
+    test('throws error if there is an invalid path', async () => {
+      expect(await lr.openFile(RAW_SONY_FILE_PATH)).toBe(0);
+      // @ts-expect-error testing C++ error logic
+      await expect(lr.extract_tiff(0)).rejects.toThrow(
+        'extract_tiff received an invalid argument, tiffpath must be a string.'
+      );
+    });
+
+    test('extracts a tiff', async () => {
+      expect(await lr.openFile(RAW_SONY_FILE_PATH)).toBe(0);
+      expect(await lr.extract_tiff(TEST_TIFF_OUTPUT_PATH)).toBe(0);
+      const [output, sample] = await Promise.all([
+        fsPromises.readFile(TEST_TIFF_OUTPUT_PATH, { encoding: 'binary' }),
+        fsPromises.readFile(SAMPLE_TIFF, { encoding: 'binary' }),
+      ]);
+      expect(output).toEqual(sample);
     });
   });
 

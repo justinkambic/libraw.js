@@ -161,18 +161,15 @@ Napi::Value LibRawWrapper::ExtractTiff(const Napi::CallbackInfo &info)
   Napi::Env env = info.Env();
   if (!info[0].IsString())
   {
-    Napi::TypeError::New(env, "extract_tiff received an invalid argument, tiffpath must be a string.").ThrowAsJavaScriptException();
+    Napi::Error::New(env, "extract_tiff received an invalid argument, tiffpath must be a string.").ThrowAsJavaScriptException();
   }
 
   Napi::String filename = info[0].As<Napi::String>();
 
   this->processor_->imgdata.params.output_tiff = 1; // output as a tiff!
-  // this->processor_->imgdata.params.half_size = 1 // export half size files (bayer = 50% resolution)
-  this->processor_->imgdata.params.output_bps = 8;    // 8 bits export is enough
-  this->processor_->imgdata.params.output_color = 1;  // sRGB = 1
   this->processor_->imgdata.params.use_camera_wb = 1; // use camera white balance
+  this->processor_->unpack();
   this->processor_->dcraw_process();
-
   return Napi::Value::From(
       info.Env(), this->processor_->dcraw_ppm_tiff_writer(filename.Utf8Value().c_str()));
 }
