@@ -352,6 +352,7 @@ describe('LibRaw', () => {
     });
 
     test('extracts a tiff', async () => {
+      jest.setTimeout(20000);
       expect(await lr.openFile(RAW_SONY_FILE_PATH)).toBe(0);
       expect(await lr.extract_tiff(TEST_TIFF_OUTPUT_PATH)).toBe(0);
       const [output, sample] = await Promise.all([
