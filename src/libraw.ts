@@ -42,6 +42,7 @@ interface LibRawWrapper {
   strerror: (errorCode: number) => string;
   unpack: () => number;
   unpack_thumb: () => number;
+  extract_tiff: (tiffPath: string) => number;
   version: () => string;
   versionNumber: () => number;
 }
@@ -166,6 +167,10 @@ export class LibRaw {
    */
   unpackThumb(): Promise<number> {
     return this.accessLibRaw(() => this.libraw.unpack_thumb());
+  }
+
+  extract_tiff(tiffPath: string): Promise<number> {
+    return this.accessLibRaw(() => this.libraw.extract_tiff(tiffPath));
   }
 
   version(): Promise<string> {
