@@ -239,6 +239,18 @@ Napi::Object WrapLensInfo(Napi::Env *env, libraw_lensinfo_t t)
   return o;
 }
 
+Napi::Object WrapLibrawArea(Napi::Env *env, libraw_area_t t)
+{
+  Napi::Object o = Napi::Object::New(*env);
+
+  o.Set("t", t.t);
+  o.Set("l", t.l);
+  o.Set("b", t.b);
+  o.Set("r", t.r);
+
+  return o;
+}
+
 Napi::Object WrapCanonMakernotes(Napi::Env *env, libraw_canon_makernotes_t t)
 {
   Napi::Object o = Napi::Object::New(*env);
@@ -277,6 +289,12 @@ Napi::Object WrapCanonMakernotes(Napi::Env *env, libraw_canon_makernotes_t t)
   o.Set("HighlightTonePriority", t.HighlightTonePriority);
   o.Set("Quality", t.Quality);
   o.Set("CanonLog", t.CanonLog);
+  o.Set("DefaultCropAbsolute", WrapLibrawArea(env, t.DefaultCropAbsolute));
+  o.Set("RecommendedImageArea", WrapLibrawArea(env, t.RecommendedImageArea));
+  o.Set("LeftOpticalBlack", WrapLibrawArea(env, t.LeftOpticalBlack));
+  o.Set("UpperOpticalBlack", WrapLibrawArea(env, t.UpperOpticalBlack));
+  o.Set("ActiveArea", WrapLibrawArea(env, t.ActiveArea));
+  o.Set("ISOgain", WrapArray(env, t.ISOgain, 2));
 
   return o;
 }
@@ -423,18 +441,30 @@ Napi::Object WrapOlympusMakernotes(Napi::Env *env, libraw_olympus_makernotes_t t
 {
   Napi::Object o = Napi::Object::New(*env);
 
+  o.Set("CameraType2", t.CameraType2);
+  o.Set("ValidBits", t.ValidBits);
   o.Set("SensorCalibration", WrapArray(env, t.SensorCalibration, 2));
+  o.Set("DriveMode", WrapArray(env, t.DriveMode, 5));
+  o.Set("ColorSpace", t.ColorSpace);
   o.Set("FocusMode", WrapArray(env, t.FocusMode, 2));
   o.Set("AutoFocus", t.AutoFocus);
   o.Set("AFPoint", t.AFPoint);
   o.Set("AFAreas", WrapArray(env, t.AFAreas, 64));
   o.Set("AFPointSelected", WrapArray(env, t.AFPointSelected, 5));
   o.Set("AFResult", t.AFResult);
-  o.Set("DriveMode", WrapArray(env, t.DriveMode, 5));
-  o.Set("ColorSpace", t.ColorSpace);
   o.Set("AFFineTune", t.AFFineTune);
   o.Set("AFFineTuneAdj", WrapArray(env, t.AFFineTuneAdj, 3));
-  o.Set("CameraType2", t.CameraType2);
+  o.Set("SpecialMode", WrapArray(env, t.SpecialMode, 3));
+  o.Set("ZoomStepCount", t.ZoomStepCount);
+  o.Set("FocusStepCount", t.FocusStepCount);
+  o.Set("FocusStepInfinity", t.FocusStepInfinity);
+  o.Set("FocusStepNear", t.FocusStepNear);
+  o.Set("FocusDistance", t.FocusDistance);
+  o.Set("AspectFrame", WrapArray(env, t.AspectFrame, 4));
+  o.Set("StackedImage", WrapArray(env, t.StackedImage, 2));
+  o.Set("isLiveND", t.isLiveND);
+  o.Set("Panorama_mode", t.Panorama_mode);
+  o.Set("Panorama_frameNum", t.Panorama_frameNum);
 
   return o;
 }
@@ -557,6 +587,10 @@ Napi::Object WrapPanasonicMakernotes(Napi::Env *env, libraw_panasonic_makernotes
   o.Set("Multishot", t.Multishot);
   o.Set("gamma", convertFloat(t.gamma));
   o.Set("HighISOMultiplier", WrapArray(env, t.HighISOMultiplier, 3));
+  o.Set("FocusStepNear", t.FocusStepNear);
+  o.Set("FocusStepCount", t.FocusStepCount);
+  o.Set("ZoomPosition", t.ZoomPosition);
+  o.Set("LensManufacturer", t.LensManufacturer);
 
   return o;
 }
@@ -632,6 +666,30 @@ Napi::Object WrapCommonMakernotes(Napi::Env *env, libraw_metadata_common_t t)
   return o;
 }
 
+Napi::Object WrapRicohMakernotes(Napi::Env *env, libraw_ricoh_makernotes_t t)
+{
+  Napi::Object o = Napi::Object::New(*env);
+
+  o.Set("AFStatus", t.AFStatus);
+  o.Set("AFAreaXPosition", WrapArray(env, t.AFAreaXPosition, 2));
+  o.Set("AFAreaYPosition", WrapArray(env, t.AFAreaYPosition, 2));
+  o.Set("AFAreaMode", t.AFAreaMode);
+  o.Set("SensorWidth", t.SensorWidth);
+  o.Set("SensorHeight", t.SensorHeight);
+  o.Set("CroppedImageWidth", t.CroppedImageWidth);
+  o.Set("CroppedImageHeight", t.CroppedImageHeight);
+  o.Set("WideAdapter", t.WideAdapter);
+  o.Set("CropMode", t.CropMode);
+  o.Set("NDFilter", t.NDFilter);
+  o.Set("AutoBracketing", t.AutoBracketing);
+  o.Set("MacroMode", t.MacroMode);
+  o.Set("FlashMode", t.FlashMode);
+  o.Set("FlashExposureComp", t.FlashExposureComp);
+  o.Set("ManualFlashOutput", t.ManualFlashOutput);
+
+  return o;
+}
+
 Napi::Object WrapMakernotes(Napi::Env *env, libraw_makernotes_t t)
 {
   Napi::Object o = Napi::Object::New(*env);
@@ -645,6 +703,7 @@ Napi::Object WrapMakernotes(Napi::Env *env, libraw_makernotes_t t)
   o.Set("kodak", WrapKodakMakernotes(env, t.kodak));
   o.Set("panasonic", WrapPanasonicMakernotes(env, t.panasonic));
   o.Set("pentax", WrapPentaxMakernotes(env, t.pentax));
+  o.Set("ricoh", WrapRicohMakernotes(env, t.ricoh));
   o.Set("phaseone", WrapPhaseoneMakernotes(env, t.phaseone));
   o.Set("samsung", WrapSamsungMakernotes(env, t.samsung));
   o.Set("common", WrapCommonMakernotes(env, t.common));
@@ -687,10 +746,6 @@ Napi::Object WrapOutputParams(Napi::Env *env, libraw_output_params_t t)
   o.Set("use_camera_wb", t.use_camera_wb);
   o.Set("use_camera_matrix", t.use_camera_matrix);
   o.Set("output_color", t.output_color);
-  // o.Set("output_profile", &t.output_profile);
-  // o.Set("camera_profile", &t.camera_profile);
-  // o.Set("bad_pixels", &t.bad_pixels);
-  // o.Set("dark_frame", &t.dark_frame);
   o.Set("output_bps", t.output_bps);
   o.Set("output_tiff", t.output_tiff);
   o.Set("output_flags", t.output_flags);
