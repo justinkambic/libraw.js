@@ -125,8 +125,7 @@ function decodeLibRawMetadata(metadata: unknown) {
   // parsing failure that `io-ts` encountered. Typically this is enough to debug
   // issues, but there are additional fields you can log when debugging tests.
   if (!isRight(decoded)) {
-    // console.error(JSON.stringify(decoded.left.map(({ context }) => context)));
-    console.log(PathReporter.report(decoded));
+    console.error(PathReporter.report(decoded));
     throw new Error('Decoded metadata does not conform to expected type');
   }
   return decoded.right;
