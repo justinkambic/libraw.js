@@ -24,6 +24,7 @@ import { LibRaw } from '../src/libraw';
 import path from 'path';
 import fs from 'fs';
 import * as t from 'io-ts';
+import { PathReporter } from 'io-ts/lib/PathReporter';
 import { isRight } from 'fp-ts/Either';
 
 const RAW_SONY_FILE_PATH = path.join(
@@ -97,12 +98,7 @@ const metadataType = t.type({
     Lens: t.string,
   }),
   makernotes: t.type({
-    canon: t.type({
-      AFAreaHeights: t.array(t.number),
-      AFAreaWidths: t.array(t.number),
-      AFAreaXPositions: t.array(t.number),
-      AFAreaYPositions: t.array(t.number),
-    }),
+    canon: t.type({}),
     common: t.type({
       CameraTemperature: t.number,
     }),
@@ -129,7 +125,7 @@ function decodeLibRawMetadata(metadata: unknown) {
   // parsing failure that `io-ts` encountered. Typically this is enough to debug
   // issues, but there are additional fields you can log when debugging tests.
   if (!isRight(decoded)) {
-    console.error(JSON.stringify(decoded.left.map(({ context }) => context)));
+    console.error(PathReporter.report(decoded));
     throw new Error('Decoded metadata does not conform to expected type');
   }
   return decoded.right;
@@ -151,10 +147,6 @@ function deleteLargeFields(m: Metadata) {
   delete m.idata.xtrans;
   delete m.idata.xtrans_abs;
   delete m.other.gpsdata;
-  delete m.makernotes.canon.AFAreaHeights;
-  delete m.makernotes.canon.AFAreaWidths;
-  delete m.makernotes.canon.AFAreaXPositions;
-  delete m.makernotes.canon.AFAreaYPositions;
   delete m.rawdata.color.WB_Coeffs;
   delete m.rawdata.color.WBCT_Coeffs;
   delete m.rawdata.color.cblack;
@@ -342,7 +334,7 @@ describe('LibRaw', () => {
 
   describe('cameraCount', () => {
     test('gives the number of supported cameras', async () => {
-      expect(await lr.cameraCount()).toBe(1117);
+      expect(await lr.cameraCount()).toBe(1182);
     });
   });
 
@@ -369,7 +361,7 @@ describe('LibRaw', () => {
 
   describe('version', () => {
     test('returns version string', async () => {
-      expect(await lr.version()).toEqual('0.20.2-Release');
+      expect(await lr.version()).toEqual('0.21.1-Release');
     });
   });
 

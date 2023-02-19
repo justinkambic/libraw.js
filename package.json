@@ -1,7 +1,7 @@
 {
   "name": "libraw.js",
   "author": "Justin Kambic",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "Provide a subset of LibRaw functionality.",
   "main": "./dist/libraw.js",
   "types": "./dist/libraw.d.ts",
@@ -9,7 +9,7 @@
   "gypfile": true,
   "dependencies": {
     "node-addon-api": "^3.0.0",
-    "node-gyp-build": "^4.3.0"
+    "node-gyp-build": "^4.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -26,12 +26,9 @@
     "io-ts": "^2.2.16",
     "jest": "^27.3.1",
     "prettier": "^2.2.0",
-    "typedoc": "^0.22.9",
-    "typedoc-plugin-markdown": "^3.11.7",
+    "typedoc": "^0.23.25",
+    "typedoc-plugin-markdown": "^3.14.0",
     "typescript": "^4.2.4"
-  },
-  "engines": {
-    "node": ">=10.24.1 <=16.0.0"
   },
   "scripts": {
     "build": "node-gyp rebuild && tsc",
