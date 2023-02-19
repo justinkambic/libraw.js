@@ -10,7 +10,7 @@ RUN curl https://www.libraw.org/data/LibRaw-0.21.1.tar.gz --output LibRaw-0.21.1
 RUN tar xzvf LibRaw-0.21.1.tar.gz && cd LibRaw-0.21.1 && ./configure --with-pic --disable-openmp && touch * && make && make install && cd ../
 RUN npm i -g node-gyp node-gyp-build prebuildify
 RUN git clone https://github.com/justinkambic/libraw.js.git
-RUN cd libraw.js && git checkout upgrade-to-libraw-21.1 && npm install && npm run format-check && npm run lint && npm run build && npm test && prebuildify --napi
+RUN cd libraw.js && git pull origin master && npm install && npm run format-check && npm run lint && npm run build && npm test && prebuildify --napi
 
 WORKDIR /libraw.js
 
