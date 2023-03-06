@@ -8,6 +8,7 @@
 .vscode
 babel.config.js
 build
+build-linux.sh
 coverage
 docs
 src
@@ -15,3 +16,4 @@ test
 tsconfig.json
 *.ts
 !*.d.ts
+Dockerfile
