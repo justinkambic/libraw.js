@@ -22,7 +22,6 @@
     "babel-jest": "^30.0.5",
     "eslint": "^9.33.0",
     "fp-ts": "^2.16.6",
-    "husky": "^9.0.11",
     "io-ts": "^2.2.21",
     "jest": "^30.0.5",
     "prettier": "^3.3.2",
@@ -44,12 +43,6 @@
     "url": "https://github.com/justinkambic/libraw.js/issues"
   },
   "homepage": "https://github.com/justinkambic/libraw.js",
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint && npm run format-check",
-      "pre-push": "npm test"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/justinkambic/libraw.js.git"
