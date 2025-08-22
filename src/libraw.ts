@@ -46,6 +46,10 @@ interface LibRawWrapper {
   versionNumber: () => number;
 }
 
+// Stronger alias for metadata returned from the native wrapper. Keep this
+// intentionally permissive: native keys and values vary by camera format.
+export type Metadata = Record<string, unknown>;
+
 /**
  * Wraps LibRaw's functionality.
  */
@@ -59,37 +63,39 @@ export class LibRaw {
   /**
    * This call returns count of non-fatal data errors (out of range, etc) occured in unpack() stage.
    */
-  errorCount(): Promise<number> {
-    return this.accessLibRaw<number>(() => this.libraw.error_count());
+  async errorCount(): Promise<number> {
+    // direct call to native binding; if it throws, the async function will
+    // return a rejected Promise automatically.
+    return this.libraw.error_count();
   }
 
   /**
    * Initializes a LibRaw instance from a file in memory.
    * @param buffer the RAW file data
    */
-  readBuffer(buffer: Buffer): Promise<void> {
-    return this.accessLibRaw<void>(() => this.libraw.open_buffer(buffer));
+  async readBuffer(buffer: Buffer): Promise<void> {
+    return this.libraw.open_buffer(buffer) as unknown as void;
   }
 
   /**
    * Returns an object containing the RAW metadata.
    */
-  getMetadata(): Promise<{ [key: string]: unknown }> {
-    return this.accessLibRaw(() => this.libraw.getMetadata());
+  async getMetadata(): Promise<Metadata> {
+    return this.libraw.getMetadata() as Metadata;
   }
 
   /**
    * Helper function that returns the XMP data of the RAW file.
    */
-  getXmp(): Promise<Buffer> {
-    return this.accessLibRaw(() => this.libraw.getXmp());
+  async getXmp(): Promise<Buffer> {
+    return this.libraw.getXmp() as Buffer;
   }
 
   /**
    * Unpacks and returns the bytes for the image's thumbnail.
    */
-  getThumbnail(): Promise<Buffer> {
-    return this.accessLibRaw(() => this.libraw.getThumbnail());
+  async getThumbnail(): Promise<Buffer> {
+    return this.libraw.getThumbnail() as Buffer;
   }
 
   /**
@@ -102,8 +108,8 @@ export class LibRaw {
    * if there has been an error situation within LibRaw.
    * @param buffer the image data
    */
-  openBuffer(buffer: Buffer): Promise<number> {
-    return this.accessLibRaw(() => this.libraw.open_buffer(buffer));
+  async openBuffer(buffer: Buffer): Promise<number> {
+    return this.libraw.open_buffer(buffer);
   }
 
   /**
@@ -114,80 +120,63 @@ export class LibRaw {
    * @param filename the file path to open
    * @param bigfileSize optional parameter bigfile_size controls background I/O interface used for file operations
    */
-  openFile(filename: string, bigFileSize?: number): Promise<number> {
-    return this.accessLibRaw(() => {
-      if (bigFileSize === undefined) {
-        return this.libraw.open_file(filename);
-      }
-      return this.libraw.open_file(filename, bigFileSize);
-    });
+  async openFile(filename: string, bigFileSize?: number): Promise<number> {
+    if (bigFileSize === undefined) {
+      return this.libraw.open_file(filename);
+    }
+    return this.libraw.open_file(filename, bigFileSize);
   }
 
-  cameraCount(): Promise<number> {
-    return this.accessLibRaw(() => this.libraw.cameraCount());
+  async cameraCount(): Promise<number> {
+    return this.libraw.cameraCount();
   }
 
-  cameraList(): Promise<string[]> {
-    return this.accessLibRaw(() => this.libraw.cameraList());
+  async cameraList(): Promise<string[]> {
+    return this.libraw.cameraList() as string[];
   }
 
   /**
    * Frees the allocated data of LibRaw instance, enabling one to process the next file using the same processor.
    * Repeated calls of recycle() are quite possible and do not conflict with anything.
    */
-  recycle(): Promise<void> {
-    return this.accessLibRaw(() => this.libraw.recycle());
+  async recycle(): Promise<void> {
+    return this.libraw.recycle() as unknown as void;
   }
 
   /**
    * This call closes input datastream with associated data buffer and unblocks opened file.
    */
-  recycleDatastream(): Promise<void> {
-    return this.accessLibRaw(() => this.libraw.recycle_datastream());
+  async recycleDatastream(): Promise<void> {
+    return this.libraw.recycle_datastream() as unknown as void;
   }
 
   /**
    * Analog of strerror(3) function: outputs the text descriptions of LibRaw error codes (in English).
    */
-  strerror(errorCode: number): Promise<string> {
-    return this.accessLibRaw(() => this.libraw.strerror(errorCode));
+  async strerror(errorCode: number): Promise<string> {
+    return this.libraw.strerror(errorCode);
   }
 
   /**
    * Unpacks the RAW files of the image, calculates the black level (not for all formats).
    */
-  unpack(): Promise<number> {
-    return this.accessLibRaw(() => this.libraw.unpack());
+  async unpack(): Promise<number> {
+    return this.libraw.unpack();
   }
 
   /**
    * Reads (or unpacks) the image preview (thumbnail), placing the
    * result into the imgdata.thumbnail.thumb buffer.
    */
-  unpackThumb(): Promise<number> {
-    return this.accessLibRaw(() => this.libraw.unpack_thumb());
+  async unpackThumb(): Promise<number> {
+    return this.libraw.unpack_thumb();
   }
 
-  version(): Promise<string> {
-    return this.accessLibRaw(() => this.libraw.version());
+  async version(): Promise<string> {
+    return this.libraw.version();
   }
 
-  versionNumber(): Promise<number> {
-    return this.accessLibRaw(() => this.libraw.versionNumber());
-  }
-
-  /**
-   * Abstracts interactions with LibRaw to avoid boilerplate
-   * async code repetitions in public methods.
-   * @param executor the interaction with LibRaw
-   */
-  private accessLibRaw<T>(executor: () => T): Promise<T> {
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(executor());
-      } catch (e: unknown) {
-        reject(e);
-      }
-    });
+  async versionNumber(): Promise<number> {
+    return this.libraw.versionNumber();
   }
 }
