@@ -1,5 +1,10 @@
+#!/bin/bash
+
+CPU_ARCH=$(uname -m)
+echo "Current CPU Architecture: $CPU_ARCH, build will be for this arch."
+
 CURRENT_LIBRAWJS_VERSION=3.0.0
-PREBUILD_PATH="prebuilds/linux-x64"
+PREBUILD_PATH="prebuilds/linux-${CPU_ARCH}"
 NODE_FILE_NAME="node.napi.node"
 OUTPUT_PATH="./${PREBUILD_PATH}/${NODE_FILE_NAME}"
 BACKUP_PATH="./${PREBUILD_PATH}/bak.${NODE_FILE_NAME}"
@@ -21,7 +26,10 @@ fi
 
 DOCKER_BUILDKIT=1
 
-docker build -t ${IMAGE_TAG_NAME} --output ${PREBUILD_PATH} --no-cache .
+#docker build --build-arg archversion=arm64 --output ${PREBUILD_PATH} --no-cache -t ${IMAGE_TAG_NAME} .
+
+
+docker build --build-arg archversion=arm64 --output "prebuilds/linux-amd64" -t ${IMAGE_TAG_NAME} .
 
 DOCKER_EXIT_CODE=$?
 

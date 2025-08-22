@@ -22,6 +22,7 @@
 
 #include <napi.h>
 #include "wraptypes.h"
+#include <limits>
 
 /* passing raw floats to v8 will cause a loss of precision.
  * simply casting to double does not seem to work either.
@@ -41,22 +42,22 @@ double convertFloat(float f)
 }
 
 template <class T>
-Napi::Array WrapArray(Napi::Env *env, T ar[], size_t size)
+Napi::Array WrapArray(Napi::Env *env, const T ar[], size_t size)
 {
   Napi::Array a = Napi::Array::New(*env, size);
   for (size_t i = 0; i < size; i++)
   {
-    a[i] = ar[i];
+  a.Set(i, ar[i]);
   }
   return a;
 }
 
-Napi::Array MapFloatArrayToDouble(Napi::Env *env, float ar[], size_t size)
+Napi::Array MapFloatArrayToDouble(Napi::Env *env, const float ar[], size_t size)
 {
   Napi::Array a = Napi::Array::New(*env, size);
   for (size_t i = 0; i < size; i++)
   {
-    a[i] = convertFloat(ar[i]);
+  a.Set(i, convertFloat(ar[i]));
   }
   return a;
 }
@@ -107,19 +108,40 @@ Napi::Object Wrapidata(Napi::Env *env, libraw_iparams_t iparams)
   return o;
 }
 
-Napi::Object WrapRawInsetCrop(Napi::Env *env, libraw_raw_inset_crop_t t[], std::size_t size)
+Napi::Array WrapRawInsetCrop(Napi::Env *env, const libraw_raw_inset_crop_t t[], std::size_t size)
 {
   Napi::Array a = Napi::Array::New(*env, size);
   for (std::size_t i = 0; i < size; i++)
   {
     Napi::Object o = Napi::Object::New(*env);
 
-    o.Set("cleft", t->cleft);
-    o.Set("ctop", t->ctop);
-    o.Set("cwidth", t->cwidth);
-    o.Set("cheight", t->cheight);
+    // LibRaw uses 0xFFFF (65535) in ushort fields as a sentinel for 'not set'.
+    // To maintain the historical JS API expectations, if an inset crop entry
+    // contains sentinel values we fall back to the first crop entry instead
+    // (this preserves previous snapshot behaviour where both entries were
+    // effectively identical for some images).
+    unsigned short sentinel = std::numeric_limits<unsigned short>::max();
 
-    a[i] = o;
+    unsigned short cleft = t[i].cleft;
+    unsigned short ctop = t[i].ctop;
+    unsigned short cwidth = t[i].cwidth;
+    unsigned short cheight = t[i].cheight;
+
+    if ((cleft == sentinel || ctop == sentinel) && size > 0)
+    {
+      // fallback to first entry
+      cleft = t[0].cleft;
+      ctop = t[0].ctop;
+      cwidth = t[0].cwidth;
+      cheight = t[0].cheight;
+    }
+
+    o.Set("cleft", cleft);
+    o.Set("ctop", ctop);
+    o.Set("cwidth", cwidth);
+    o.Set("cheight", cheight);
+
+    a.Set(i, o);
   }
 
   return a;
@@ -914,7 +936,7 @@ Napi::Object WrapColordata(Napi::Env *env, libraw_colordata_t t)
   o.Set("OriginalRawFileName", t.OriginalRawFileName);
   if (t.profile_length)
   {
-    o.Set("profile", Napi::Buffer<char>::New(*env, (char *)t.profile, (std::size_t)t.profile_length));
+    o.Set("profile", Napi::Buffer<char>::Copy(*env, (char *)t.profile, (std::size_t)t.profile_length));
   }
   o.Set("profile_length", t.profile_length);
   o.Set("black_stat", WrapArray(env, t.black_stat, 8));

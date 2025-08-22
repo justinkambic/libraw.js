@@ -64,10 +64,11 @@ Napi::Value LibRawWrapper::GetThumbnail(const Napi::CallbackInfo &info)
 
   if (this->processor_->imgdata.thumbnail.thumb)
   {
-    return Napi::Buffer<char>::New(
-        env,
-        this->processor_->imgdata.thumbnail.thumb,
-        this->processor_->imgdata.thumbnail.tlength);
+  // Copy the thumbnail into Node-managed memory to avoid dangling pointer
+  return Napi::Buffer<char>::Copy(
+    env,
+    this->processor_->imgdata.thumbnail.thumb,
+    this->processor_->imgdata.thumbnail.tlength);
   }
 
   Napi::Error::New(
@@ -85,10 +86,11 @@ Napi::Value LibRawWrapper::GetXmpData(const Napi::CallbackInfo &info)
   char *xmp = this->processor_->imgdata.idata.xmpdata;
   if (xmp)
   {
-    return Napi::Buffer<char>::New(
-        env,
-        xmp,
-        this->processor_->imgdata.idata.xmplen);
+  // Copy the XMP into Node-managed memory to avoid dangling pointer
+  return Napi::Buffer<char>::Copy(
+    env,
+    xmp,
+    this->processor_->imgdata.idata.xmplen);
   }
   return Napi::Object::New(env);
 }
@@ -96,8 +98,8 @@ Napi::Value LibRawWrapper::GetXmpData(const Napi::CallbackInfo &info)
 Napi::Value LibRawWrapper::GetMetadata(const Napi::CallbackInfo &info)
 {
   Napi::Env env = info.Env();
-  libraw_data_t data = this->processor_->imgdata;
-  return WrapLibRawData(&env, &data);
+  // Pass pointer to LibRaw-owned data (do not take address of a stack copy)
+  return WrapLibRawData(&env, &this->processor_->imgdata);
 }
 
 Napi::Value LibRawWrapper::OpenFile(const Napi::CallbackInfo &info)
@@ -105,11 +107,13 @@ Napi::Value LibRawWrapper::OpenFile(const Napi::CallbackInfo &info)
   Napi::Env env = info.Env();
   if (!info[0].IsString())
   {
-    Napi::TypeError::New(env, "openFile received an invalid argument, filename must be a string.").ThrowAsJavaScriptException();
+  Napi::TypeError::New(env, "openFile received an invalid argument, filename must be a string.").ThrowAsJavaScriptException();
+  return env.Undefined();
   }
   if (info.Length() == 2 && !info[1].IsNumber())
   {
-    Napi::TypeError::New(env, "openFile received an invalid argument, bigfile_size must be a number.").ThrowAsJavaScriptException();
+  Napi::TypeError::New(env, "openFile received an invalid argument, bigfile_size must be a number.").ThrowAsJavaScriptException();
+  return env.Undefined();
   }
   Napi::String filename = info[0].As<Napi::String>();
   int ret;
@@ -131,7 +135,8 @@ Napi::Value LibRawWrapper::OpenBuffer(const Napi::CallbackInfo &info)
   Napi::Env env = info.Env();
   if (info.Length() != 1 || !info[0].IsBuffer())
   {
-    Napi::TypeError::New(env, "openBuffer received a null argument, buffer is required.").ThrowAsJavaScriptException();
+  Napi::TypeError::New(env, "openBuffer received a null argument, buffer is required.").ThrowAsJavaScriptException();
+  return env.Undefined();
   }
   Napi::Buffer<char> buffer = info[0].As<Napi::Buffer<char>>();
   return Napi::Value::From(
@@ -204,7 +209,7 @@ Napi::Value LibRawWrapper::CameraList(const Napi::CallbackInfo &info)
   Napi::Array cameraListArray = Napi::Array::New(info.Env(), i);
   for (size_t idx = 0; idx < i; idx++)
   {
-    cameraListArray[idx] = cameraList[idx];
+  cameraListArray.Set(idx, Napi::String::New(info.Env(), cameraList[idx]));
   }
   return cameraListArray;
 }

@@ -134,31 +134,32 @@ function decodeLibRawMetadata(metadata: unknown) {
 function deleteLargeFields(m: Metadata) {
   // these fields are very large - `io-ts` verifies they conform to the
   // expected type/shape, and then we delete them to keep snapshots manageable
-  delete m.color.P1_color;
-  delete m.color.WB_Coeffs;
-  delete m.color.WBCT_Coeffs;
-  delete m.color.cblack;
-  delete m.color.ccm;
-  delete m.color.cmatrix;
-  delete m.color.curve;
-  delete m.color.dng_color;
-  delete m.color.dng_levels;
-  delete m.color.white;
-  delete m.idata.xtrans;
-  delete m.idata.xtrans_abs;
-  delete m.other.gpsdata;
-  delete m.rawdata.color.WB_Coeffs;
-  delete m.rawdata.color.WBCT_Coeffs;
-  delete m.rawdata.color.cblack;
-  delete m.rawdata.color.ccm;
-  delete m.rawdata.color.cmatrix;
-  delete m.rawdata.color.curve;
-  delete m.rawdata.color.dng_color;
-  delete m.rawdata.color.dng_levels;
-  delete m.rawdata.color.white;
-  delete m.rawdata.iparams.xmpdata;
-  delete m.rawdata.iparams.xtrans;
-  delete m.rawdata.iparams.xtrans_abs;
+  const mm: any = m;
+  delete mm.color.P1_color;
+  delete mm.color.WB_Coeffs;
+  delete mm.color.WBCT_Coeffs;
+  delete mm.color.cblack;
+  delete mm.color.ccm;
+  delete mm.color.cmatrix;
+  delete mm.color.curve;
+  delete mm.color.dng_color;
+  delete mm.color.dng_levels;
+  delete mm.color.white;
+  delete mm.idata.xtrans;
+  delete mm.idata.xtrans_abs;
+  delete mm.other.gpsdata;
+  delete mm.rawdata.color.WB_Coeffs;
+  delete mm.rawdata.color.WBCT_Coeffs;
+  delete mm.rawdata.color.cblack;
+  delete mm.rawdata.color.ccm;
+  delete mm.rawdata.color.cmatrix;
+  delete mm.rawdata.color.curve;
+  delete mm.rawdata.color.dng_color;
+  delete mm.rawdata.color.dng_levels;
+  delete mm.rawdata.color.white;
+  delete mm.rawdata.iparams.xmpdata;
+  delete mm.rawdata.iparams.xtrans;
+  delete mm.rawdata.iparams.xtrans_abs;
 }
 
 /*
@@ -260,8 +261,6 @@ describe('LibRaw', () => {
     });
 
     test('throws exception if filename is not string', async () => {
-      // ignore ban-ts-comment for testing purposes
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore testing C++ condition
       await expect(lr.openFile(23)).rejects.toThrow(
         'openFile received an invalid argument, filename must be a string.'
@@ -269,8 +268,6 @@ describe('LibRaw', () => {
     });
 
     test('throws exception if bigfile_size is not number', async () => {
-      // ignore ban-ts-comment for testing purposes
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore testing C++ condition
       await expect(lr.openFile('a string', 'not a number')).rejects.toThrow(
         'openFile received an invalid argument, bigfile_size must be a number.'
@@ -280,8 +277,6 @@ describe('LibRaw', () => {
 
   describe('openBuffer', () => {
     test('throws exception if buffer is not provided', async () => {
-      // ignore ban-ts-comment for testing purposes
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore testing C++ condition
       await expect(lr.openBuffer()).rejects.toThrow(
         'openBuffer received a null argument, buffer is required.'
@@ -361,7 +356,7 @@ describe('LibRaw', () => {
 
   describe('version', () => {
     test('returns version string', async () => {
-      expect(await lr.version()).toEqual('0.21.1-Release');
+      expect(await lr.version()).toEqual('0.21.2-Release');
     });
   });
 
