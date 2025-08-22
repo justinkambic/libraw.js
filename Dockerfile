@@ -1,8 +1,12 @@
-FROM ubuntu:latest AS linux-build
+FROM --platform=linux/amd64 ubuntu:latest AS linux-build
+
+ARG archversion=arm64
+RUN echo "Building for architecture: ${archversion}"
+
 SHELL ["/bin/bash", "-c"]
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
-RUN apt-get install -y libssl1.1 curl git g++ build-essential autotools-dev automake 
+RUN apt-get install -y libssl3 curl git g++ build-essential autotools-dev automake 
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash && apt-get install -y nodejs
 RUN curl -XGET http://www.ijg.org/files/jpegsrc.v9d.tar.gz -o jpegsrc.v9d.tar.gz
 RUN tar xofp jpegsrc.v9d.tar.gz && cd jpeg-9d && ./configure --with-pic && make && make install && cd ../
@@ -15,4 +19,5 @@ RUN cd libraw.js && git pull origin master && npm install && npm run format-chec
 WORKDIR /libraw.js
 
 FROM scratch AS export-stage
-COPY --from=linux-build /libraw.js/prebuilds/linux-x64/node.napi.node .
+COPY --from=linux-build libraw.js/prebuilds/linux-arm64/node.napi.node .
+
