@@ -146,10 +146,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload prebuild assets to release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: prebuild-${{ github.run_id }}
-          files: release-assets/*
+      - name: Upload prebuild assets to draft release
+        shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          UPLOAD_URL="${{ steps.create_release.outputs.upload_url }}"
+          if [ -z "$UPLOAD_URL" ]; then
+            echo "No upload_url from create_release step"
+            exit 1
+          fi
+          for f in release-assets/*; do
+            [ -f "$f" ] || continue
+            fname=$(basename "$f")
+            echo "Uploading $fname to $UPLOAD_URL"
+            curl -sS -X POST \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -H "Content-Type: application/zip" \
+              --data-binary @"$f" "${UPLOAD_URL}?name=$fname"
+          done
