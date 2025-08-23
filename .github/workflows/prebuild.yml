@@ -138,6 +138,17 @@ jobs:
             cd ../..
           fi
 
+      - name: List release assets (debug)
+        run: |
+          echo "Contents of release-assets:" 
+          ls -la release-assets || true
+          echo "Disk usage:" 
+          du -sh release-assets/* || true
+          if [ -z "$(ls -A release-assets 2>/dev/null)" ]; then
+            echo "No release assets found; aborting upload step"
+            exit 1
+          fi
+
       - name: Create draft release
         id: create_release
         uses: actions/create-release@v1
