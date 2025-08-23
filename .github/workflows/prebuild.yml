@@ -186,12 +186,17 @@ jobs:
             [ -f "$f" ] || continue
             fname=$(basename "$f")
             echo "---> Uploading $fname to $UPLOAD_URL"
-            # Use verbose curl and capture HTTP status and response body
+            # The upload_url returned by GitHub is a template like
+            # https://uploads.github.com/repos/.../assets{?name,label}
+            # Strip the template suffix before using it.
+            CLEAN_URL="${UPLOAD_URL%\{*}"
+            echo "Using upload endpoint: $CLEAN_URL?name=$fname"
             resp_file="/tmp/upload_resp_${fname}"
+            # Use multipart/form-data as required by GitHub Releases API
             http_status=$(curl -sS -o "$resp_file" -w "%{http_code}" -X POST \
               -H "Authorization: token ${GITHUB_TOKEN}" \
-              -H "Content-Type: application/zip" \
-              --data-binary @"$f" "${UPLOAD_URL}?name=$fname") || true
+              -F "file=@${f};type=application/zip" \
+              "${CLEAN_URL}?name=$fname") || true
             echo "HTTP status: $http_status"
             echo "Response body for $fname:" && cat "$resp_file" || true
             echo "curl exit code: $?"
