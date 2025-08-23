@@ -149,6 +149,7 @@ jobs:
       - name: Upload prebuild assets to release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: prebuild-${{ github.run_id }}
           files: release-assets/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
