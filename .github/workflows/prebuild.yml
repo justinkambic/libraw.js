@@ -11,6 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -105,6 +106,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read package version
+        id: version
+        run: |
+          echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+
       - name: Download Linux prebuilds artifact
         uses: actions/download-artifact@v4
         with:
@@ -120,14 +126,15 @@ jobs:
       - name: Prepare release assets
         run: |
           mkdir -p release-assets
+          VERSION=${{ steps.version.outputs.VERSION }}
           if [ -d artifacts/linux ]; then
             cd artifacts/linux || exit 0
-            zip -r ../../release-assets/prebuilds-linux-${{ github.run_id }}.zip . || true
+            zip -r ../../release-assets/prebuilds-linux-v${VERSION}.zip . || true
             cd ../..
           fi
           if [ -d artifacts/macos ]; then
             cd artifacts/macos || exit 0
-            zip -r ../../release-assets/prebuilds-macos-${{ github.run_id }}.zip . || true
+            zip -r ../../release-assets/prebuilds-macos-v${VERSION}.zip . || true
             cd ../..
           fi
 
@@ -135,10 +142,10 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: prebuild-${{ github.run_id }}
-          release_name: "prebuild-${{ github.run_id }}"
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          release_name: "prebuild-v${{ steps.version.outputs.VERSION }}"
           body: |
-            Automated prebuilds for run ${{ github.run_id }}.
+            Automated prebuilds for version ${{ steps.version.outputs.VERSION }}.
             - Commit: ${{ github.sha }}
             - Workflow: ${{ github.workflow }}
           draft: true
