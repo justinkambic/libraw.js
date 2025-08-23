@@ -24,11 +24,9 @@
           }
         }]
       ],
-      # Prefer explicit static libs in /usr/local for legacy setups, but also
-      # allow Homebrew locations and pkg-config discovered linker flags.
+      # Use linker flags and pkg-config to discover libs; avoid hardcoded
+      # absolute paths that may not exist on runners (e.g. /usr/local on macOS arm).
       "libraries": [
-        "/usr/local/lib/libraw_r.a",
-        "/usr/local/lib/libjpeg.a",
         "-L/opt/homebrew/lib",
         "-lraw_r",
         "-ljpeg",
