@@ -138,16 +138,10 @@ jobs:
             cd ../..
           fi
 
-      - name: List release assets (debug)
+      - name: Verify release assets exist
         run: |
           echo "Contents of release-assets:" 
-          ls -la release-assets || true
-          echo "Disk usage:" 
-          du -sh release-assets/* || true
-          if [ -z "$(ls -A release-assets 2>/dev/null)" ]; then
-            echo "No release assets found; aborting upload step"
-            exit 1
-          fi
+          ls -la release-assets
 
       - name: Create draft release
         id: create_release
@@ -164,46 +158,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload prebuild assets to draft release (verbose)
+      - name: Upload prebuild assets to draft release
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          echo "create_release outputs:"
-          echo "  upload_url: '${{ steps.create_release.outputs.upload_url }}'"
-          echo "  api url: '${{ steps.create_release.outputs.url }}'"
           UPLOAD_URL="${{ steps.create_release.outputs.upload_url }}"
           if [ -z "$UPLOAD_URL" ]; then
             echo "ERROR: No upload_url from create_release step"
             exit 1
           fi
-          # show files we will upload
-          echo "Files in release-assets:"
-          ls -la release-assets || true
-
+          CLEAN_URL="${UPLOAD_URL%\{*}"
           for f in release-assets/*; do
             [ -f "$f" ] || continue
             fname=$(basename "$f")
-            echo "---> Uploading $fname to $UPLOAD_URL"
-            # The upload_url returned by GitHub is a template like
-            # https://uploads.github.com/repos/.../assets{?name,label}
-            # Strip the template suffix before using it.
-            CLEAN_URL="${UPLOAD_URL%\{*}"
-            echo "Using upload endpoint: $CLEAN_URL?name=$fname"
-            resp_file="/tmp/upload_resp_${fname}"
-            # Use multipart/form-data as required by GitHub Releases API
-            http_status=$(curl -sS -o "$resp_file" -w "%{http_code}" -X POST \
+            echo "Uploading $fname"
+            curl -sS -X POST \
               -H "Authorization: token ${GITHUB_TOKEN}" \
               -F "file=@${f};type=application/zip" \
-              "${CLEAN_URL}?name=$fname") || true
-            echo "HTTP status: $http_status"
-            echo "Response body for $fname:" && cat "$resp_file" || true
-            echo "curl exit code: $?"
+              "${CLEAN_URL}?name=$fname"
           done
-
-          # After uploads, query the release to list attached assets
-          REPO_API="https://api.github.com/repos/${{ github.repository }}"
-          RELEASE_API="$REPO_API/releases/tags/v${{ steps.version.outputs.VERSION }}"
-          echo "Querying release API: $RELEASE_API"
-          curl -sS -H "Authorization: token ${GITHUB_TOKEN}" "$RELEASE_API" || true
