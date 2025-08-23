@@ -17,6 +17,13 @@
       ],
       "cflags!": ["-fno-exceptions"],
       "cflags_cc!": ["-fno-exceptions"],
+      # Require modern C++ standard for node-addon-api
+      "cflags_cc": ["-std=c++17"],
+      "xcode_settings": {
+        "CLANG_CXX_LANGUAGE_STANDARD": "c++17",
+        "CLANG_CXX_LIBRARY": "libc++",
+        "MACOSX_DEPLOYMENT_TARGET": "11.0"
+      },
       "conditions": [
         ['OS=="mac"', {
           'xcode_settings': {
