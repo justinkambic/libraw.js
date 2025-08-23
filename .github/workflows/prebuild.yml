@@ -80,7 +80,7 @@ jobs:
           cd jpeg-9d
           ./configure --with-pic --prefix=/usr/local
           make -j"$(sysctl -n hw.ncpu)"
-          make install
+          sudo make install
           cd ..
 
       - name: Build LibRaw
@@ -90,7 +90,7 @@ jobs:
           cd LibRaw-0.21.2
           ./configure --with-pic --disable-openmp --prefix=/usr/local
           make -j"$(sysctl -n hw.ncpu)"
-          make install
+          sudo make install
           cd ..
 
       - name: Install npm deps
