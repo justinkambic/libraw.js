@@ -109,7 +109,7 @@ jobs:
       - name: Read package version
         id: version
         run: |
-          echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+          node -e "const fs=require('fs');const pkg=require('./package.json');const out=process.env.GITHUB_OUTPUT; if(!out){console.error('GITHUB_OUTPUT not set'); process.exit(1);} fs.appendFileSync(out, 'VERSION='+pkg.version + '\n');"
 
       - name: Download Linux prebuilds artifact
         uses: actions/download-artifact@v4
