@@ -29,9 +29,11 @@ jobs:
       - id: install-libraw
         name: Install LibRaw
         run: tar xzvf LibRaw-0.21.1.tar.gz && cd LibRaw-0.21.1 && ./configure --with-pic --disable-openmp && touch * && make && sudo make install
-      - id: set-ld-library
-        name: LD Library
-        run: sudo ldconfig -v && LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+      - id: pkg-config-check
+        name: Check pkg-config
+        run: |
+          echo "pkg-config libraw --libs: $(pkg-config --libs libraw 2>/dev/null || echo 'not found')"
+          echo "pkg-config libjpeg --libs: $(pkg-config --libs libjpeg 2>/dev/null || echo 'not found')"
       - id: clean-libjpeg-files
         name: Clean libjpeg files
         run: rm -rf jpeg-9d jpegsrc.v9d.tar.gz
