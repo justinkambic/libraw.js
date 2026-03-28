@@ -11,7 +11,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -72,7 +71,6 @@ jobs:
       - name: Install Homebrew deps
         run: |
           brew update
-          # Install bottles for jpeg and libraw to avoid building from source on macOS runners
           brew install jpeg libraw pkg-config python3
 
       - name: Export Homebrew environment
@@ -102,6 +100,8 @@ jobs:
     name: Create draft release with prebuilds
     runs-on: ubuntu-latest
     needs: [build-linux, build-macos]
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -109,7 +109,13 @@ jobs:
       - name: Read package version
         id: version
         run: |
-          node -e "const fs=require('fs');const pkg=require('./package.json');const out=process.env.GITHUB_OUTPUT; if(!out){console.error('GITHUB_OUTPUT not set'); process.exit(1);} fs.appendFileSync(out, 'VERSION='+pkg.version + '\n');"
+          node -e "
+            const fs = require('fs');
+            const pkg = require('./package.json');
+            const out = process.env.GITHUB_OUTPUT;
+            if (!out) { console.error('GITHUB_OUTPUT not set'); process.exit(1); }
+            fs.appendFileSync(out, 'VERSION=' + pkg.version + '\n');
+          "
 
       - name: Download Linux prebuilds artifact
         uses: actions/download-artifact@v4
@@ -125,57 +131,53 @@ jobs:
 
       - name: Prepare release assets
         run: |
+          set -euo pipefail
           mkdir -p release-assets
-          VERSION=${{ steps.version.outputs.VERSION }}
-          if [ -d artifacts/linux ]; then
-            cd artifacts/linux || exit 0
-            zip -r ../../release-assets/prebuilds-linux-v${VERSION}.zip . || true
-            cd ../..
-          fi
-          if [ -d artifacts/macos ]; then
-            cd artifacts/macos || exit 0
-            zip -r ../../release-assets/prebuilds-macos-v${VERSION}.zip . || true
-            cd ../..
-          fi
 
-      - name: Verify release assets exist
-        run: |
-          echo "Contents of release-assets:" 
-          ls -la release-assets
+          # Copy raw .node files with platform-arch prefix for easy identification
+          # prebuildify produces: prebuilds/<platform>-<arch>/node.napi.node
+          # but node-gyp-build expects: prebuilds/<platform>-<arch>/<package-name>.node
+          # The upload-artifact preserves the directory structure, so we flatten
+          # the .node files into release-assets with descriptive names.
 
-      - name: Create draft release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: v${{ steps.version.outputs.VERSION }}
-          release_name: "prebuild-v${{ steps.version.outputs.VERSION }}"
-          body: |
-            Automated prebuilds for version ${{ steps.version.outputs.VERSION }}.
-            - Commit: ${{ github.sha }}
-            - Workflow: ${{ github.workflow }}
-          draft: true
-          prerelease: false
+          for dir in artifacts/linux artifacts/macos; do
+            if [ -d "$dir" ]; then
+              find "$dir" -name "*.node" | while read -r node_file; do
+                # Extract the platform-arch directory name (e.g., linux-x64, darwin-arm64)
+                platform_arch=$(basename "$(dirname "$node_file")")
+                fname=$(basename "$node_file")
+                asset_name="${platform_arch}-${fname}"
+                echo "Copying ${node_file} -> release-assets/${asset_name}"
+                cp "$node_file" "release-assets/${asset_name}"
+              done
+            fi
+          done
+
+          echo "Release assets:"
+          ls -la release-assets/
+
+      - name: Create draft release and upload assets
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload prebuild assets to draft release
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          UPLOAD_URL="${{ steps.create_release.outputs.upload_url }}"
-          if [ -z "$UPLOAD_URL" ]; then
-            echo "ERROR: No upload_url from create_release step"
-            exit 1
-          fi
-          CLEAN_URL="${UPLOAD_URL%\{*}"
+          VERSION=${{ steps.version.outputs.VERSION }}
+          TAG="v${VERSION}"
+
+          # Create the draft release
+          gh release create "$TAG" \
+            --draft \
+            --title "v${VERSION}" \
+            --notes "Automated prebuilds for version ${VERSION}.
+          - Commit: ${{ github.sha }}
+          - Workflow: ${{ github.workflow }}"
+
+          # Upload all .node files as release assets
           for f in release-assets/*; do
             [ -f "$f" ] || continue
-            fname=$(basename "$f")
-            echo "Uploading $fname"
-            curl -sS -X POST \
-              -H "Authorization: token ${GITHUB_TOKEN}" \
-              -F "file=@${f};type=application/zip" \
-              "${CLEAN_URL}?name=$fname"
+            echo "Uploading $(basename "$f")"
+            gh release upload "$TAG" "$f"
           done
+
+          echo "Draft release ${TAG} created with assets:"
+          gh release view "$TAG"
