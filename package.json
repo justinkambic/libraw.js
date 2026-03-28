@@ -56,6 +56,12 @@
       "pre-push": "npm test"
     }
   },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/.claude/"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/justinkambic/libraw.js.git"
