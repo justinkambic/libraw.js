@@ -11,24 +11,28 @@ jobs:
     runs-on: ubuntu-latest
     name: build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         id: checkout-code
         name: Checkout
+      - uses: actions/setup-node@v4
+        name: Setup Node
+        with:
+          node-version: '18'
       - id: dependencies
         name: Build Dependencies
-        run: sudo apt-get update && sudo apt-get install -y nodejs node-gyp libssl1.1
+        run: sudo apt-get update && sudo apt-get install -y build-essential python3 pkg-config
       - id: get-libjpeg
         name: Get libjpeg
-        run: curl -XGET http://www.ijg.org/files/jpegsrc.v9d.tar.gz -o jpegsrc.v9d.tar.gz
+        run: curl -fsSL http://www.ijg.org/files/jpegsrc.v9d.tar.gz -o jpegsrc.v9d.tar.gz
       - id: install-libjpeg
         name: Install libjpeg
-        run: tar xofp jpegsrc.v9d.tar.gz && cd jpeg-9d && ./configure --with-pic && make && sudo make install
+        run: tar xzf jpegsrc.v9d.tar.gz && cd jpeg-9d && ./configure --with-pic && make -j"$(nproc)" && sudo make install
       - id: get-libraw
         name: Download LibRaw Release
-        run: curl https://www.libraw.org/data/LibRaw-0.21.2.tar.gz --output LibRaw-0.21.2.tar.gz
+        run: curl -fsSL https://www.libraw.org/data/LibRaw-0.21.2.tar.gz -o LibRaw-0.21.2.tar.gz
       - id: install-libraw
         name: Install LibRaw
-        run: tar xzvf LibRaw-0.21.2.tar.gz && cd LibRaw-0.21.2 && ./configure --with-pic --disable-openmp && touch * && make && sudo make install
+        run: tar xzf LibRaw-0.21.2.tar.gz && cd LibRaw-0.21.2 && ./configure --with-pic --disable-openmp && make -j"$(nproc)" && sudo make install
       - id: pkg-config-check
         name: Check pkg-config
         run: |
@@ -40,18 +44,15 @@ jobs:
       - id: clean-libraw-files
         name: Clean LibRaw Build Files
         run: rm -rf LibRaw-0.21.2 LibRaw-0.21.2.tar.gz
-      - id: global-npm
-        name: Setup Global npm Packages
-        run: sudo npm i -g node-gyp node-gyp-build
       - id: install-npm
         name: Install npm Packages
-        run: npm install
+        run: npm ci
       - id: lint
         name: Lint
         run: npm run format-check && npm run lint
       - id: build-package
         name: Build Package
-        run: node-gyp rebuild
+        run: npm run build
       - id: unit-tests
         name: Run Unit Tests
         run: npm run test
