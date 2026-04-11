@@ -96,10 +96,52 @@ jobs:
           name: prebuilds-macos
           path: prebuilds
 
+  build-windows:
+    name: Build Windows prebuilds
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies via vcpkg
+        run: |
+          vcpkg install libraw:x64-windows-static-md libjpeg-turbo:x64-windows-static-md
+
+      - name: Export vcpkg prefix
+        run: |
+          $prefix = "$env:VCPKG_INSTALLATION_ROOT\installed\x64-windows-static-md"
+          echo "LIBRAW_PREFIX=$prefix" >> $env:GITHUB_ENV
+          echo "Installed headers:"
+          dir "$prefix\include\libraw" 2>$null
+          echo "Installed libs:"
+          dir "$prefix\lib\*.lib" 2>$null
+
+      - name: Install npm deps
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+        env:
+          LIBRAW_PREFIX: ${{ env.LIBRAW_PREFIX }}
+
+      - name: Run prebuildify
+        run: npx prebuildify --napi
+
+      - name: Upload Windows prebuilds
+        uses: actions/upload-artifact@v4
+        with:
+          name: prebuilds-windows
+          path: prebuilds
+
   publish-release:
     name: Create draft release with prebuilds
     runs-on: ubuntu-latest
-    needs: [build-linux, build-macos]
+    needs: [build-linux, build-macos, build-windows]
     permissions:
       contents: write
     steps:
@@ -129,6 +171,12 @@ jobs:
           name: prebuilds-macos
           path: artifacts/macos
 
+      - name: Download Windows prebuilds artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: prebuilds-windows
+          path: artifacts/windows
+
       - name: Prepare release assets
         run: |
           set -euo pipefail
@@ -140,7 +188,7 @@ jobs:
           # The upload-artifact preserves the directory structure, so we flatten
           # the .node files into release-assets with descriptive names.
 
-          for dir in artifacts/linux artifacts/macos; do
+          for dir in artifacts/linux artifacts/macos artifacts/windows; do
             if [ -d "$dir" ]; then
               find "$dir" -name "*.node" | while read -r node_file; do
                 # Extract the platform-arch directory name (e.g., linux-x64, darwin-arm64)
