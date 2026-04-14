@@ -7,6 +7,12 @@
   "types": "./dist/libraw.d.ts",
   "license": "LGPL-2.1",
   "gypfile": true,
+  "files": [
+    "dist/",
+    "prebuilds/",
+    "binding.gyp",
+    "src/"
+  ],
   "dependencies": {
     "node-addon-api": "^3.0.0",
     "node-gyp-build": "^4.6.0"
@@ -49,6 +55,12 @@
       "pre-commit": "npm run lint && npm run format-check",
       "pre-push": "npm test"
     }
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/.claude/"
+    ]
   },
   "repository": {
     "type": "git",

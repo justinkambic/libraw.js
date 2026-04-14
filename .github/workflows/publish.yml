@@ -1,0 +1,83 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  npm-publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download prebuilds from release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${{ github.event.release.tag_name }}"
+
+          echo "Downloading assets from release ${TAG}"
+          mkdir -p release-assets
+          gh release download "$TAG" --dir release-assets
+
+          echo "Downloaded assets:"
+          ls -la release-assets/
+
+          # Reconstruct the prebuilds/ directory structure.
+          # Assets are named <platform>-<arch>-<filename>.node
+          # (e.g., linux-x64-libraw.js.node, darwin-arm64-libraw.js.node)
+          # We need to place them at prebuilds/<platform>-<arch>/<filename>.node
+          mkdir -p prebuilds
+          for f in release-assets/*.node; do
+            [ -f "$f" ] || continue
+            fname=$(basename "$f")
+            # Extract platform-arch prefix (everything before the last dash-separated filename)
+            # e.g., "linux-x64-libraw.js.node" -> platform_arch="linux-x64", node_file="libraw.js.node"
+            # Split on the second dash: platform is first token, arch is second, rest is filename
+            platform=$(echo "$fname" | cut -d'-' -f1)
+            arch=$(echo "$fname" | cut -d'-' -f2)
+            node_file=$(echo "$fname" | cut -d'-' -f3-)
+            platform_arch="${platform}-${arch}"
+
+            mkdir -p "prebuilds/${platform_arch}"
+            echo "Placing ${fname} -> prebuilds/${platform_arch}/${node_file}"
+            cp "$f" "prebuilds/${platform_arch}/${node_file}"
+          done
+
+      - name: Verify prebuilds structure
+        run: |
+          echo "Prebuild contents:"
+          find prebuilds -type f -name "*.node"
+          # Expect:
+          # prebuilds/linux-x64/libraw.js.node
+          # prebuilds/darwin-arm64/libraw.js.node
+
+          # Fail if no prebuilds were found
+          count=$(find prebuilds -type f -name "*.node" | wc -l)
+          if [ "$count" -lt 1 ]; then
+            echo "ERROR: No .node prebuild files found"
+            exit 1
+          fi
+          echo "Found ${count} prebuild(s)"
+
+      - name: Install dependencies and build TypeScript
+        run: |
+          npm ci
+          npx tsc
+
+      - name: Dry-run publish (verify tarball contents)
+        run: npm pack --dry-run
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
